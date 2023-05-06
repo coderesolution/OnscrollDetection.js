@@ -1,0 +1,12 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "script" : "gulp compile"
+    },
+    "run" : {
+      "enabled" : true,
+      "script" : "gulp"
+    }
+  }
+}
