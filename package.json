@@ -1,31 +1,30 @@
 {
-  "name": "onscrolldetection",
-  "version": "1.0.0",
-  "description": "",
-  "main": "gulpfile.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/coderesolution/OnscrollDetection.js.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/coderesolution/OnscrollDetection.js/issues"
-  },
-  "homepage": "https://github.com/coderesolution/OnscrollDetection.js#readme",
-  "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/preset-env": "^7.21.5",
-    "eslint": "^8.40.0",
-    "eslint-plugin-import": "^2.27.5",
-    "gulp": "^4.0.2",
-    "gulp-babel": "^8.0.0",
-    "gulp-eslint": "^6.0.0",
-    "gulp-rename": "^2.0.0",
-    "gulp-uglify-es": "^3.0.0"
-  }
+	"name": "OnscrollDetection",
+	"version": "1.0.0",
+	"homepage": "https://github.com/coderesolution/OnscrollDetection.js#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/coderesolution/OnscrollDetection.js.git"
+	},
+	"type": "module",
+	"source": "src/OnscrollDetection.js",
+	"exports": {
+		"require": "./dist/OnscrollDetection.cjs",
+		"default": "./dist/OnscrollDetection.modern.js"
+	},
+	"main": "./dist/OnscrollDetection.cjs",
+	"module": "./dist/OnscrollDetection.module.js",
+	"unpkg": "./dist/OnscrollDetection.umd.js",
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/coderesolution/OnscrollDetection.js/issues"
+	},
+	"scripts": {
+		"build": "microbundle --format umd --name OnscrollDetection",
+		"dev": "microbundle watch"
+	},
+	"devDependencies": {
+		"microbundle": "^0.15.1"
+	}
 }
