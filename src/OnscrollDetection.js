@@ -1,4 +1,5 @@
 class OnscrollDetection {
+
 	constructor(options = {}) {
 		this.elements = options.elements || '[data-onscroll]';
 		this.init();

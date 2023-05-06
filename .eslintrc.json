@@ -1,0 +1,19 @@
+{
+	"extends": ["eslint:recommended"],
+	"parserOptions": {
+		"ecmaVersion": 2018,
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": "off",
+		"no-mixed-spaces-and-tabs": "off",
+		"no-console": "off"
+	},
+	"globals": {
+		"document": true,
+		"window": true,
+		"console": true,
+		"gsap": true,
+		"ScrollTrigger": true
+	}
+}
