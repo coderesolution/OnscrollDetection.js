@@ -40,7 +40,7 @@ We have already included the file in our [Boilerplate](https://github.com/codere
 	gsap.registerPlugin(ScrollTrigger);
 
 	// Initialise OnscrollDetection
-	const inview = new OnscrollDetection(/*options*/);
+	const onscroll = new OnscrollDetection(/*options*/);
 </script>
 ```
 
@@ -54,7 +54,7 @@ import OnscrollDetection from './path-to/OnscrollDetection';
 gsap.registerPlugin(ScrollTrigger);
 
 // Initialise OnscrollDetection
-const inview = new OnscrollDetection(/*options*/);
+const onscroll = new OnscrollDetection(/*options*/);
 ```
 
 ## Defaults
@@ -112,11 +112,11 @@ Stop animations where they are. Not advised as this may have negative impact on 
 
 ```js
 /* Stop all animations */
-inview.stop();
+onscroll.stop();
 
 /* Stop specific animation */
-const specificScrollTrigger = inview.scrollTriggers[0]; // Replace this with the actual ScrollTrigger instance you want to remove
-inview.stop(specificScrollTrigger); // This will remove only the specified ScrollTrigger animation
+const specificScrollTrigger = onscroll.scrollTriggers[0]; // Replace this with the actual ScrollTrigger instance you want to remove
+onscroll.stop(specificScrollTrigger); // This will remove only the specified ScrollTrigger animation
 ```
 
 #### Restart
@@ -124,7 +124,7 @@ inview.stop(specificScrollTrigger); // This will remove only the specified Scrol
 Stop and restart all animations.
 
 ```js
-inview.restart();
+onscroll.restart();
 ```
 
 ## Examples of use
