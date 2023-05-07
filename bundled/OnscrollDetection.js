@@ -89,12 +89,13 @@
           }
 
           /* Apply animations */
-          var aAnimation = gsap.fromTo(oElement, _extends({}, aAnimateFrom, {
+          var fromProperties = _extends({}, aAnimateFrom, {
             bottom: oElement.hasAttribute('data-onscroll-auto') && oElement.hasAttribute('data-onscroll-reverse') ? 'auto' : null,
             top: oElement.hasAttribute('data-onscroll-auto') && !oElement.hasAttribute('data-onscroll-reverse') ? 'auto' : null,
             x: oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'x' || oElement.dataset.onscrollDirection === 'xy') ? fnGetOffset() : null,
             y: !oElement.hasAttribute('data-onscroll-direction') || oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'y' || oElement.dataset.onscrollDirection === 'xy') ? fnGetOffset() : null
-          }), _extends({}, aAnimateTo, {
+          });
+          var toProperties = _extends({}, aAnimateTo, {
             x: function x() {
               if (oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'x' || oElement.dataset.onscrollDirection === 'xy')) {
                 if (oElement.hasAttribute('data-onscroll-speed')) {
@@ -122,10 +123,16 @@
               scrub: true,
               markers: oElement.hasAttribute('data-onscroll-debug') ? true : false
             }
-          }));
+          });
+          var animation = gsap.fromTo(oElement, fromProperties, toProperties);
 
-          /* Store the ScrollTrigger instance */
-          _this.scrollTriggers.push(aAnimation.scrollTrigger);
+          /* Store the ScrollTrigger instance and animation */
+          _this.scrollTriggers.push(animation.scrollTrigger);
+          _this.animationsData.push({
+            oElement: oElement,
+            fromProperties: fromProperties,
+            toProperties: toProperties
+          });
 
           /* Debug */
           if (oElement.hasAttribute('data-onscroll-debug')) {
@@ -150,6 +157,7 @@
       };
       this.elements = options.elements || '[data-onscroll]';
       this.scrollTriggers = [];
+      this.animationsData = [];
       this.init();
     }
     var _proto = OnscrollDetection.prototype;
@@ -172,6 +180,20 @@
         });
         this.scrollTriggers = []; // Clear the ScrollTrigger instances array
       }
+    };
+    _proto.restart = function restart() {
+      var _this2 = this;
+      // Remove existing ScrollTriggers
+      this.stop();
+
+      // Reapply animations using the stored animation properties
+      this.animationsData.forEach(function (_ref) {
+        var oElement = _ref.oElement,
+          fromProperties = _ref.fromProperties,
+          toProperties = _ref.toProperties;
+        var animation = gsap.fromTo(oElement, fromProperties, toProperties);
+        _this2.scrollTriggers.push(animation.scrollTrigger);
+      });
     };
     return OnscrollDetection;
   }();

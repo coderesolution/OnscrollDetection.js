@@ -112,12 +112,19 @@ Stop animations where they are. Not advised as this may have negative impact on 
 
 ```js
 /* Stop all animations */
-inview.destroy();
+inview.stop();
 
 /* Stop specific animation */
 const specificScrollTrigger = inview.scrollTriggers[0]; // Replace this with the actual ScrollTrigger instance you want to remove
-inview.destroy(specificScrollTrigger); // This will remove only the specified ScrollTrigger animation
+inview.stop(specificScrollTrigger); // This will remove only the specified ScrollTrigger animation
+```
 
+#### Restart
+
+Stop and restart all animations.
+
+```js
+inview.restart();
 ```
 
 ## Examples of use
