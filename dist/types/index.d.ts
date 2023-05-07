@@ -1,5 +1,8 @@
 export default class OnscrollDetection {
     constructor(options?: {});
     elements: any;
-    init(): void;
+    scrollTriggers: any[];
+    init: () => void;
+    refresh(): void;
+    stop(target?: any): void;
 }

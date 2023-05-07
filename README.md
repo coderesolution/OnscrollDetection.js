@@ -96,6 +96,30 @@ Apply any of the following to `[data-onscroll]` element to apply custom settings
 | `data-onscroll-from` | `json` | Custom gsap.from() properties. add JSON format to `data-onscroll-from` attribute, i.e. {"backgroundColor": "#fff", "rotation": "0"} |
 | `data-onscroll-to` | `json` | Custom gsap.to() properties. add JSON format to `data-onscroll-to` attribute, i.e. {"backgroundColor": "red", "rotation": "5"} |
 
+### Methods
+
+#### Refresh
+
+Update ScrollTrigger calculations.
+
+```js
+onscroll.refresh();
+```
+
+#### Stop
+
+Stop animations where they are. Not advised as this may have negative impact on performance.
+
+```js
+/* Stop all animations */
+inview.destroy();
+
+/* Stop specific animation */
+const specificScrollTrigger = inview.scrollTriggers[0]; // Replace this with the actual ScrollTrigger instance you want to remove
+inview.destroy(specificScrollTrigger); // This will remove only the specified ScrollTrigger animation
+
+```
+
 ## Examples of use
 
 - [Code Resolution](https://coderesolution.com/): Digital agency partner.

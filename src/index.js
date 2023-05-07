@@ -1,10 +1,11 @@
 export default class OnscrollDetection {
 	constructor(options = {}) {
 		this.elements = options.elements || '[data-onscroll]'
+		this.scrollTriggers = []
 		this.init()
 	}
 
-	init() {
+	init = () => {
 		/**
 		 * Loop each element
 		 */
@@ -74,7 +75,7 @@ export default class OnscrollDetection {
 			}
 
 			/* Apply animations */
-			gsap.fromTo(
+			const aAnimation = gsap.fromTo(
 				oElement,
 				{
 					...aAnimateFrom,
@@ -140,6 +141,9 @@ export default class OnscrollDetection {
 				}
 			)
 
+			/* Store the ScrollTrigger instance */
+			this.scrollTriggers.push(aAnimation.scrollTrigger)
+
 			/* Debug */
 			if (oElement.hasAttribute('data-onscroll-debug')) {
 				console.group(`uOnscrollDetection() debug instance (${iIndex + 1})`)
@@ -171,5 +175,24 @@ export default class OnscrollDetection {
 				console.groupEnd()
 			}
 		})
+	}
+
+	refresh() {
+		ScrollTrigger.refresh()
+	}
+
+	stop(target = null) {
+		if (target) {
+			const index = this.scrollTriggers.indexOf(target)
+			if (index !== -1) {
+				this.scrollTriggers[index].kill()
+				this.scrollTriggers.splice(index, 1)
+			}
+		} else {
+			this.scrollTriggers.forEach((st) => {
+				st.kill()
+			})
+			this.scrollTriggers = [] // Clear the ScrollTrigger instances array
+		}
 	}
 }
