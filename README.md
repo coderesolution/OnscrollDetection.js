@@ -17,19 +17,44 @@ The following <u>must</u> be instantiated before:
 
 ## Quick start
 
-### Install from NPM
+### Installation
 
-We have currently documented use exclusively by CDN or via our [Boilerplate](https://github.com/coderesolution/boilerplate):
+OnscrollDetection.js requires the GSAP library, as well as ScrollTrigger to work. You need to include all of them before OnscrollDetection.js.
+
+#### Boilerplate
+
+We have already included the file in our [Boilerplate](https://github.com/coderesolution/boilerplate).
+
+#### Use from CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/coderesolution/OnscrollDetection.js@v0.0.1/dist/OnscrollDetection.umd.js"></script>
+<!-- Include GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+
+<!-- Include OnscrollDetection -->
+<script src="https://cdn.jsdelivr.net/gh/coderesolution/OnscrollDetection.js/bundled/OnscrollDetection.min.js"></script>
+
+<script>
+	// Register GSAP
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Initialise OnscrollDetection
+	const inview = new OnscrollDetection(/*options*/);
+</script>
 ```
 
-OnscrollDetection.js requires the GSAP library to work. You need to import it before OnscrollDetection.js.
-Afterwards, instantiate OnscrollDetection.js with the following:
-
+#### Install NPM module
 ```js
-const onscroll = new OnscrollDetection(/*options*/);
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import OnscrollDetection from './path-to/OnscrollDetection';
+
+// Register GSAP
+gsap.registerPlugin(ScrollTrigger);
+
+// Initialise OnscrollDetection
+const inview = new OnscrollDetection(/*options*/);
 ```
 
 ## Defaults
