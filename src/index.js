@@ -148,7 +148,7 @@ export default class OnscrollDetection {
 
 			/* Debug */
 			if (oElement.hasAttribute('data-onscroll-debug')) {
-				console.group(`uOnscrollDetection() debug instance (${iIndex + 1})`)
+				console.group(`OnscrollDetection() debug instance (${iIndex + 1})`)
 				console.log({
 					element: oElement,
 					auto: oElement.hasAttribute('data-onscroll-auto') ? true : false,
