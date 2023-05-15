@@ -63,7 +63,8 @@ You can configure OnscrollDetection.js via options:
 
 ```js
 const onscroll = new OnscrollDetection({
-	elements: '[data-onscroll]'
+	elements: '[data-onscroll]',
+	screen: '(min-width: 768px)'
 });
 ```
 

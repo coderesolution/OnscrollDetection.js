@@ -31,17 +31,25 @@
         gsap.utils.toArray(_this.elements).forEach(function (oElement, iIndex) {
           /* Defaults */
           var oTrigger,
+            gsapAnimation = null,
+            aAnimateFrom = [],
+            aAnimateTo = [],
             iOffset = null,
             iDistance = null,
             iStart = 'top bottom',
-            iBottom = 'bottom top';
+            iBottom = 'bottom top',
+            sScreen = _this.screen,
+            matchMedia = gsap.matchMedia();
 
           /* Assign scroll trigger to element */
           oTrigger = oElement;
 
+          /* Update media query conditions if they exist */
+          if (oElement.hasAttribute('data-onscroll-screen')) {
+            sScreen = oElement.dataset.onscrollScreen;
+          }
+
           /* Determine custom from->to properties */
-          var aAnimateFrom = [],
-            aAnimateTo = [];
           if (oElement.hasAttribute('data-onscroll-from')) {
             aAnimateFrom = JSON.parse(oElement.dataset.onscrollFrom);
           }
@@ -124,24 +132,28 @@
               markers: oElement.hasAttribute('data-onscroll-debug') ? true : false
             }
           });
-          var animation = gsap.fromTo(oElement, fromProperties, toProperties);
+          matchMedia.add(sScreen, function () {
+            gsapAnimation = gsap.fromTo(oElement, fromProperties, toProperties);
 
-          /* Store the ScrollTrigger instance and animation */
-          _this.scrollTriggers.push(animation.scrollTrigger);
-          _this.animationsData.push({
-            oElement: oElement,
-            fromProperties: fromProperties,
-            toProperties: toProperties
+            /* Store the ScrollTrigger instance and animation */
+            _this.scrollTriggers.push(gsapAnimation.scrollTrigger);
+            _this.animationsData.push({
+              oElement: oElement,
+              fromProperties: fromProperties,
+              toProperties: toProperties,
+              gsapAnimation: gsapAnimation
+            });
           });
 
-          /* Debug */
+          /* Debug mode */
           if (oElement.hasAttribute('data-onscroll-debug')) {
-            console.group("uOnscrollDetection() debug instance (" + (iIndex + 1) + ")");
+            console.group("OnscrollDetection() debug instance (" + (iIndex + 1) + ")");
             console.log({
               element: oElement,
               auto: oElement.hasAttribute('data-onscroll-auto') ? true : false,
               offset: iOffset,
               distance: iDistance,
+              screen: sScreen,
               speed: oElement.hasAttribute('data-onscroll-speed') ? oElement.dataset.onscrollSpeed + ' calculated at ' + (1 - parseFloat(oElement.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (_this.scrollTrigger ? _this.scrollTrigger.start : 0)) : null,
               direction: oElement.hasAttribute('data-onscroll-direction') ? oElement.dataset.onscrollDirection : 'y',
               reverse: oElement.hasAttribute('data-onscroll-reverse') ? true : false,
@@ -156,6 +168,7 @@
         });
       };
       this.elements = options.elements || '[data-onscroll]';
+      this.screen = options.screen || '(min-width: 768px)';
       this.scrollTriggers = [];
       this.animationsData = [];
       this.init();
@@ -164,6 +177,21 @@
     _proto.refresh = function refresh() {
       ScrollTrigger.refresh();
     };
+    _proto.restart = function restart() {
+      // Remove existing ScrollTriggers
+      this.stop();
+
+      // Reinitialize the ScrollTrigger instances
+      ScrollTrigger.getAll().forEach(function (trigger) {
+        return trigger.kill();
+      });
+
+      // Refresh ScrollTrigger
+      ScrollTrigger.refresh();
+
+      // Reapply animations using the stored animation properties
+      this.init();
+    };
     _proto.stop = function stop(target) {
       if (target === void 0) {
         target = null;
@@ -171,29 +199,18 @@
       if (target) {
         var index = this.scrollTriggers.indexOf(target);
         if (index !== -1) {
-          this.scrollTriggers[index].kill();
+          this.animationsData[index].gsapAnimation.kill();
           this.scrollTriggers.splice(index, 1);
+          this.animationsData.splice(index, 1);
         }
       } else {
-        this.scrollTriggers.forEach(function (st) {
-          st.kill();
+        this.animationsData.forEach(function (_ref) {
+          var gsapAnimation = _ref.gsapAnimation;
+          gsapAnimation.kill();
         });
         this.scrollTriggers = []; // Clear the ScrollTrigger instances array
+        this.animationsData = []; // Clear the animations data array
       }
-    };
-    _proto.restart = function restart() {
-      var _this2 = this;
-      // Remove existing ScrollTriggers
-      this.stop();
-
-      // Reapply animations using the stored animation properties
-      this.animationsData.forEach(function (_ref) {
-        var oElement = _ref.oElement,
-          fromProperties = _ref.fromProperties,
-          toProperties = _ref.toProperties;
-        var animation = gsap.fromTo(oElement, fromProperties, toProperties);
-        _this2.scrollTriggers.push(animation.scrollTrigger);
-      });
     };
     return OnscrollDetection;
   }();
