@@ -1,8 +1,9 @@
 export default class OnscrollDetection {
 	constructor(options = {}) {
 		this.elements = options.elements || '[data-onscroll]'
+		this.screen = options.screen || '(min-width: 768px)'
 		this.scrollTriggers = []
-		this.animationsData = [];
+		this.animationsData = []
 		this.init()
 	}
 
@@ -13,18 +14,25 @@ export default class OnscrollDetection {
 		gsap.utils.toArray(this.elements).forEach((oElement, iIndex) => {
 			/* Defaults */
 			let oTrigger,
+				gsapAnimation = null,
+				aAnimateFrom = [],
+				aAnimateTo = [],
 				iOffset = null,
 				iDistance = null,
 				iStart = 'top bottom',
-				iBottom = 'bottom top'
+				iBottom = 'bottom top',
+				sScreen = this.screen,
+				matchMedia = gsap.matchMedia()
 
 			/* Assign scroll trigger to element */
 			oTrigger = oElement
 
-			/* Determine custom from->to properties */
-			let aAnimateFrom = [],
-				aAnimateTo = []
+			/* Update media query conditions if they exist */
+			if (oElement.hasAttribute('data-onscroll-screen')) {
+				sScreen = oElement.dataset.onscrollScreen
+			}
 
+			/* Determine custom from->to properties */
 			if (oElement.hasAttribute('data-onscroll-from')) {
 				aAnimateFrom = JSON.parse(oElement.dataset.onscrollFrom)
 			}
@@ -97,7 +105,7 @@ export default class OnscrollDetection {
 						(oElement.dataset.onscrollDirection === 'y' || oElement.dataset.onscrollDirection === 'xy'))
 						? fnGetOffset()
 						: null,
-			};
+			}
 
 			const toProperties = {
 				...aAnimateTo,
@@ -117,8 +125,7 @@ export default class OnscrollDetection {
 					if (
 						!oElement.hasAttribute('data-onscroll-direction') ||
 						(oElement.hasAttribute('data-onscroll-direction') &&
-							(oElement.dataset.onscrollDirection === 'y' ||
-								oElement.dataset.onscrollDirection === 'xy'))
+							(oElement.dataset.onscrollDirection === 'y' || oElement.dataset.onscrollDirection === 'xy'))
 					) {
 						if (oElement.hasAttribute('data-onscroll-speed')) {
 							return fnGetSpeed()
@@ -138,15 +145,17 @@ export default class OnscrollDetection {
 					scrub: true,
 					markers: oElement.hasAttribute('data-onscroll-debug') ? true : false,
 				},
-			};
+			}
 
-			const animation = gsap.fromTo( oElement, fromProperties, toProperties )
+			const animation = matchMedia.add(sScreen, () => {
+			  gsapAnimation = gsap.fromTo(oElement, fromProperties, toProperties)
 
-			/* Store the ScrollTrigger instance and animation */
-			this.scrollTriggers.push(animation.scrollTrigger);
-			this.animationsData.push({ oElement, fromProperties, toProperties });
+			  /* Store the ScrollTrigger instance and animation */
+			  this.scrollTriggers.push(gsapAnimation.scrollTrigger)
+			  this.animationsData.push({ oElement, fromProperties, toProperties, gsapAnimation })
+			})
 
-			/* Debug */
+			/* Debug mode */
 			if (oElement.hasAttribute('data-onscroll-debug')) {
 				console.group(`OnscrollDetection() debug instance (${iIndex + 1})`)
 				console.log({
@@ -154,6 +163,7 @@ export default class OnscrollDetection {
 					auto: oElement.hasAttribute('data-onscroll-auto') ? true : false,
 					offset: iOffset,
 					distance: iDistance,
+					screen: sScreen,
 					speed: oElement.hasAttribute('data-onscroll-speed')
 						? oElement.dataset.onscrollSpeed +
 						  ' calculated at ' +
@@ -183,29 +193,34 @@ export default class OnscrollDetection {
 		ScrollTrigger.refresh()
 	}
 
-	stop(target = null) {
-		if (target) {
-			const index = this.scrollTriggers.indexOf(target)
-			if (index !== -1) {
-				this.scrollTriggers[index].kill()
-				this.scrollTriggers.splice(index, 1)
-			}
-		} else {
-			this.scrollTriggers.forEach((st) => {
-				st.kill()
-			})
-			this.scrollTriggers = [] // Clear the ScrollTrigger instances array
-		}
-	}
-
 	restart() {
 		// Remove existing ScrollTriggers
 		this.stop();
 
+		// Reinitialize the ScrollTrigger instances
+		ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+		// Refresh ScrollTrigger
+		ScrollTrigger.refresh();
+
 		// Reapply animations using the stored animation properties
-		this.animationsData.forEach(({ oElement, fromProperties, toProperties }) => {
-			const animation = gsap.fromTo(oElement, fromProperties, toProperties);
-			this.scrollTriggers.push(animation.scrollTrigger);
-		});
+		this.init();
+	}
+
+	stop(target = null) {
+		if (target) {
+			const index = this.scrollTriggers.indexOf(target)
+			if (index !== -1) {
+				this.animationsData[index].gsapAnimation.kill()
+				this.scrollTriggers.splice(index, 1)
+				this.animationsData.splice(index, 1)
+			}
+		} else {
+			this.animationsData.forEach(({ gsapAnimation }) => {
+				gsapAnimation.kill()
+			})
+			this.scrollTriggers = [] // Clear the ScrollTrigger instances array
+			this.animationsData = [] // Clear the animations data array
+		}
 	}
 }

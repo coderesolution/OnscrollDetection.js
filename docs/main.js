@@ -20,5 +20,13 @@ requestAnimationFrame(raf)
 
 /* Initialise OnscrollDetection.js */
 const onscroll = new OnscrollDetection({
-	elements: '[data-onscroll]'
+	elements: '[data-onscroll]',
+	screen: '(min-width: 1000px)'
 });
+
+// setTimeout( () => {
+//
+// 	alert('restart!')
+// 	onscroll.restart()
+//
+// }, 2000 );
