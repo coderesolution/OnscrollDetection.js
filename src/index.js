@@ -148,11 +148,11 @@ export default class OnscrollDetection {
 			}
 
 			const animation = matchMedia.add(sScreen, () => {
-			  gsapAnimation = gsap.fromTo(oElement, fromProperties, toProperties)
+				gsapAnimation = gsap.fromTo(oElement, fromProperties, toProperties)
 
-			  /* Store the ScrollTrigger instance and animation */
-			  this.scrollTriggers.push(gsapAnimation.scrollTrigger)
-			  this.animationsData.push({ oElement, fromProperties, toProperties, gsapAnimation })
+				/* Store the ScrollTrigger instance and animation */
+				this.scrollTriggers.push(gsapAnimation.scrollTrigger)
+				this.animationsData.push({ oElement, fromProperties, toProperties, gsapAnimation })
 			})
 
 			/* Debug mode */
@@ -195,16 +195,16 @@ export default class OnscrollDetection {
 
 	restart() {
 		// Remove existing ScrollTriggers
-		this.stop();
+		this.stop()
 
 		// Reinitialize the ScrollTrigger instances
-		ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+		ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
 
 		// Refresh ScrollTrigger
-		ScrollTrigger.refresh();
+		ScrollTrigger.refresh()
 
 		// Reapply animations using the stored animation properties
-		this.init();
+		this.init()
 	}
 
 	stop(target = null) {
