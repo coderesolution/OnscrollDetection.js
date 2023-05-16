@@ -23,41 +23,66 @@
       if (options === void 0) {
         options = {};
       }
+      // Initialize class properties with default values or provided options
       this.elements = options.elements || '[data-onscroll]';
       this.screen = options.screen || '(min-width: 768px)';
-      this.scrollTriggers = new Map();
+      this.triggers = new Map();
+
+      // Initialize the class
       this.init();
     }
     var _proto = OnscrollDetection.prototype;
     _proto.init = function init() {
       var _this = this;
+      // Convert elements to an array and loop through each
       gsap.utils.toArray(this.elements).forEach(function (element, index) {
+        // Get the trigger element
         var trigger = _this.getTrigger(element);
+
+        // Get the screen media query
         var screen = _this.getScreen(element);
+
+        // Create a matchMedia instance
         var matchMedia = gsap.matchMedia();
+
+        // Get the animation properties for 'from' state
         var fromProperties = _this.getFromProperties(element, index);
+
+        // Get the animation properties for 'to' state
         var toProperties = _this.getToProperties(element, index, trigger);
+
+        // Add the animation to the matchMedia instance and store the ScrollTrigger instance
         matchMedia.add(screen, function () {
           var gsapAnimation = gsap.fromTo(element, fromProperties, toProperties);
-          _this.scrollTriggers.set(gsapAnimation.scrollTrigger, {
+          _this.triggers.set(gsapAnimation.scrollTrigger, {
             element: element,
             fromProperties: fromProperties,
             toProperties: toProperties,
             gsapAnimation: gsapAnimation
           });
         });
+
+        // Enable debug mode for logging
         _this.debugMode(element, index);
       });
     }
 
     // Helper methods
+
+    // Get the trigger element for ScrollTrigger
     ;
     _proto.getTrigger = function getTrigger(element) {
       return element.hasAttribute('data-onscroll-auto') ? element.parentElement : element;
-    };
+    }
+
+    // Get the screen media query
+    ;
     _proto.getScreen = function getScreen(element) {
       return element.hasAttribute('data-onscroll-screen') ? element.dataset.onscrollScreen : this.screen;
-    };
+    }
+
+    // Get the animation properties for 'from' state
+    ;
     _proto.getFromProperties = function getFromProperties(element, index) {
       var animateFrom = this.getAnimateFrom(element);
       var offset = this.getOffset(element);
@@ -67,7 +92,10 @@
         x: this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'x' || this.getDirection(element) === 'xy') ? offset : null,
         y: !this.hasAttributes(element, ['data-onscroll-direction']) || this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'y' || this.getDirection(element) === 'xy') ? offset : null
       });
-    };
+    }
+
+    // Get the animation properties for 'to' state
+    ;
     _proto.getToProperties = function getToProperties(element, index, trigger) {
       var animateTo = this.getAnimateTo(element);
       return _extends({}, animateTo, {
@@ -83,34 +111,58 @@
           markers: this.hasAttributes(element, ['data-onscroll-debug'])
         }
       });
-    };
+    }
+
+    // Check if an element has all the specified attributes
+    ;
     _proto.hasAttributes = function hasAttributes(element, attrs) {
       return attrs.every(function (attr) {
         return element.hasAttribute(attr);
       });
-    };
+    }
+
+    // Get the animation properties for 'from' state
+    ;
     _proto.getAnimateFrom = function getAnimateFrom(element) {
       return element.hasAttribute('data-onscroll-from') ? JSON.parse(element.dataset.onscrollFrom) : [];
-    };
+    }
+
+    // Get the animation properties for 'to' state
+    ;
     _proto.getAnimateTo = function getAnimateTo(element) {
       return element.hasAttribute('data-onscroll-to') ? JSON.parse(element.dataset.onscrollTo) : [];
-    };
+    }
+
+    // Get the offset value
+    ;
     _proto.getOffset = function getOffset(element) {
       return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null;
-    };
+    }
+
+    // Get the scroll direction
+    ;
     _proto.getDirection = function getDirection(element) {
       return element.dataset.onscrollDirection;
-    };
+    }
+
+    // Get the 'x' value for ScrollTrigger animation
+    ;
     _proto.getX = function getX(element) {
       if (this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'x' || this.getDirection(element) === 'xy')) {
         return this.getDistanceOrSpeed(element);
       }
-    };
+    }
+
+    // Get the 'y' value for ScrollTrigger animation
+    ;
     _proto.getY = function getY(element) {
       if (!this.hasAttributes(element, ['data-onscroll-direction']) || this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'y' || this.getDirection(element) === 'xy')) {
         return this.getDistanceOrSpeed(element);
       }
-    };
+    }
+
+    // Get the distance or speed value for ScrollTrigger animation
+    ;
     _proto.getDistanceOrSpeed = function getDistanceOrSpeed(element) {
       if (this.hasAttributes(element, ['data-onscroll-speed'])) {
         return (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0));
@@ -124,13 +176,22 @@
         }
         return distance;
       }
-    };
+    }
+
+    // Get the start value for ScrollTrigger animation
+    ;
     _proto.getStart = function getStart(element) {
       return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
-    };
+    }
+
+    // Get the end value for ScrollTrigger animation
+    ;
     _proto.getEnd = function getEnd(element) {
       return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
-    };
+    }
+
+    // Enable debug mode for logging
+    ;
     _proto.debugMode = function debugMode(element, index) {
       if (this.hasAttributes(element, ['data-onscroll-debug'])) {
         console.group("OnscrollDetection() debug instance (" + (index + 1) + ")");
@@ -151,15 +212,21 @@
         });
         console.groupEnd();
       }
-    };
+    }
+
+    // Refresh ScrollTrigger instances
+    ;
     _proto.refresh = function refresh() {
       ScrollTrigger.refresh();
-    };
+    }
+
+    // Restart the animations and reinitialize the ScrollTrigger instances
+    ;
     _proto.restart = function restart() {
-      // Remove existing ScrollTriggers
+      // Stop the current animations and remove ScrollTriggers
       this.stop();
 
-      // Reinitialize the ScrollTrigger instances
+      // Kill all existing ScrollTrigger instances
       ScrollTrigger.getAll().forEach(function (trigger) {
         return trigger.kill();
       });
@@ -167,44 +234,57 @@
       // Refresh ScrollTrigger
       ScrollTrigger.refresh();
 
-      // Reapply animations using the stored animation properties
+      // Reapply animations and initialize ScrollTrigger
       this.init();
-    };
+    }
+
+    // Stop animations and ScrollTriggers
+    ;
     _proto.stop = function stop(target) {
       if (target === void 0) {
         target = null;
       }
       if (target) {
-        var animationData = this.scrollTriggers.get(target);
+        // Stop animation and remove the ScrollTrigger for a specific target
+        var animationData = this.triggers.get(target);
         if (animationData) {
           animationData.gsapAnimation.kill();
-          this.scrollTriggers["delete"](target);
+          this.triggers["delete"](target);
         }
       } else {
-        this.scrollTriggers.forEach(function (_ref) {
+        // Stop all animations and clear the ScrollTrigger instances
+        this.triggers.forEach(function (_ref) {
           var gsapAnimation = _ref.gsapAnimation;
           gsapAnimation.kill();
         });
-        this.scrollTriggers.clear(); // Clear the ScrollTrigger instances map
+        this.triggers.clear();
       }
-    };
+    }
+
+    // Update animation for a specific target with new fromProperties and toProperties
+    ;
     _proto.update = function update(target, fromProperties, toProperties) {
-      var animationData = this.scrollTriggers.get(target);
+      var animationData = this.triggers.get(target);
       if (animationData) {
+        // Stop the existing animation
         animationData.gsapAnimation.kill();
 
-        // Reinitialize the animation
+        // Reinitialize the animation with updated properties
         var gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties);
-        this.scrollTriggers.set(gsapAnimation.scrollTrigger, _extends({}, animationData, {
+        this.triggers.set(gsapAnimation.scrollTrigger, _extends({}, animationData, {
           fromProperties: fromProperties,
           toProperties: toProperties,
           gsapAnimation: gsapAnimation
         }));
       }
-    };
+    }
+
+    // Destroy the OnscrollDetection instance
+    ;
     _proto.destroy = function destroy() {
+      // Stop all animations and clear the ScrollTrigger instances
       this.stop();
-      this.scrollTriggers = null;
+      this.triggers = null;
     };
     return OnscrollDetection;
   }();

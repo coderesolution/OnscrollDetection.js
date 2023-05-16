@@ -2,7 +2,7 @@ export default class OnscrollDetection {
     constructor(options?: {});
     elements: any;
     screen: any;
-    scrollTriggers: Map<any, any>;
+    triggers: Map<any, any>;
     init(): void;
     getTrigger(element: any): any;
     getScreen(element: any): any;

@@ -1,24 +1,36 @@
 export default class OnscrollDetection {
 	constructor(options = {}) {
+		// Initialise class properties with default values or provided options
 		this.elements = options.elements || '[data-onscroll]'
 		this.screen = options.screen || '(min-width: 768px)'
-		this.scrollTriggers = new Map()
+		this.triggers = new Map()
 
+		// Initialise the class
 		this.init()
 	}
 
 	init() {
+		// Convert elements to an array and loop through each
 		gsap.utils.toArray(this.elements).forEach((element, index) => {
+			// Get the trigger element
 			const trigger = this.getTrigger(element)
+
+			// Get the screen media query
 			const screen = this.getScreen(element)
+
+			// Create a matchMedia instance
 			const matchMedia = gsap.matchMedia()
 
+			// Get the animation properties for 'from' state
 			const fromProperties = this.getFromProperties(element, index)
+
+			// Get the animation properties for 'to' state
 			const toProperties = this.getToProperties(element, index, trigger)
 
+			// Add the animation to the matchMedia instance and store the ScrollTrigger instance
 			const animation = matchMedia.add(screen, () => {
 				const gsapAnimation = gsap.fromTo(element, fromProperties, toProperties)
-				this.scrollTriggers.set(gsapAnimation.scrollTrigger, {
+				this.triggers.set(gsapAnimation.scrollTrigger, {
 					element,
 					fromProperties,
 					toProperties,
@@ -26,19 +38,24 @@ export default class OnscrollDetection {
 				})
 			})
 
+			// Enable debug mode for logging
 			this.debugMode(element, index)
 		})
 	}
 
 	// Helper methods
+
+	// Get the trigger element for ScrollTrigger
 	getTrigger(element) {
 		return element.hasAttribute('data-onscroll-auto') ? element.parentElement : element
 	}
 
+	// Get the screen media query
 	getScreen(element) {
 		return element.hasAttribute('data-onscroll-screen') ? element.dataset.onscrollScreen : this.screen
 	}
 
+	// Get the animation properties for 'from' state
 	getFromProperties(element, index) {
 		const animateFrom = this.getAnimateFrom(element)
 		const offset = this.getOffset(element)
@@ -65,6 +82,7 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the animation properties for 'to' state
 	getToProperties(element, index, trigger) {
 		const animateTo = this.getAnimateTo(element)
 
@@ -84,26 +102,32 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Check if an element has all the specified attributes
 	hasAttributes(element, attrs) {
 		return attrs.every((attr) => element.hasAttribute(attr))
 	}
 
+	// Get the animation properties for 'from' state
 	getAnimateFrom(element) {
 		return element.hasAttribute('data-onscroll-from') ? JSON.parse(element.dataset.onscrollFrom) : []
 	}
 
+	// Get the animation properties for 'to' state
 	getAnimateTo(element) {
 		return element.hasAttribute('data-onscroll-to') ? JSON.parse(element.dataset.onscrollTo) : []
 	}
 
+	// Get the offset value
 	getOffset(element) {
 		return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null
 	}
 
+	// Get the scroll direction
 	getDirection(element) {
 		return element.dataset.onscrollDirection
 	}
 
+	// Get the 'x' value for ScrollTrigger animation
 	getX(element) {
 		if (
 			this.hasAttributes(element, ['data-onscroll-direction']) &&
@@ -113,6 +137,7 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the 'y' value for ScrollTrigger animation
 	getY(element) {
 		if (
 			!this.hasAttributes(element, ['data-onscroll-direction']) ||
@@ -123,6 +148,7 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the distance or speed value for ScrollTrigger animation
 	getDistanceOrSpeed(element) {
 		if (this.hasAttributes(element, ['data-onscroll-speed'])) {
 			return (
@@ -141,14 +167,17 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the start value for ScrollTrigger animation
 	getStart(element) {
 		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}
 
+	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
 		return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
 	}
 
+	// Enable debug mode for logging
 	debugMode(element, index) {
 		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
 			console.group(`OnscrollDetection() debug instance (${index + 1})`)
@@ -178,48 +207,55 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Refresh ScrollTrigger instances
 	refresh() {
 		ScrollTrigger.refresh()
 	}
 
+	// Restart the animations and reinitialize the ScrollTrigger instances
 	restart() {
-		// Remove existing ScrollTriggers
+		// Stop the current animations and remove ScrollTriggers
 		this.stop()
 
-		// Reinitialize the ScrollTrigger instances
+		// Kill all existing ScrollTrigger instances
 		ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
 
 		// Refresh ScrollTrigger
 		ScrollTrigger.refresh()
 
-		// Reapply animations using the stored animation properties
+		// Reapply animations and initialize ScrollTrigger
 		this.init()
 	}
 
+	// Stop animations and ScrollTriggers
 	stop(target = null) {
 		if (target) {
-			const animationData = this.scrollTriggers.get(target)
+			// Stop animation and remove the ScrollTrigger for a specific target
+			const animationData = this.triggers.get(target)
 			if (animationData) {
 				animationData.gsapAnimation.kill()
-				this.scrollTriggers.delete(target)
+				this.triggers.delete(target)
 			}
 		} else {
-			this.scrollTriggers.forEach(({ gsapAnimation }) => {
+			// Stop all animations and clear the ScrollTrigger instances
+			this.triggers.forEach(({ gsapAnimation }) => {
 				gsapAnimation.kill()
 			})
-			this.scrollTriggers.clear() // Clear the ScrollTrigger instances map
+			this.triggers.clear()
 		}
 	}
 
+	// Update animation for a specific target with new fromProperties and toProperties
 	update(target, fromProperties, toProperties) {
-		const animationData = this.scrollTriggers.get(target)
+		const animationData = this.triggers.get(target)
 
 		if (animationData) {
+			// Stop the existing animation
 			animationData.gsapAnimation.kill()
 
-			// Reinitialize the animation
+			// Reinitialize the animation with updated properties
 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
-			this.scrollTriggers.set(gsapAnimation.scrollTrigger, {
+			this.triggers.set(gsapAnimation.scrollTrigger, {
 				...animationData,
 				fromProperties,
 				toProperties,
@@ -228,8 +264,10 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Destroy the OnscrollDetection instance
 	destroy() {
+		// Stop all animations and clear the ScrollTrigger instances
 		this.stop()
-		this.scrollTriggers = null
+		this.triggers = null
 	}
 }
