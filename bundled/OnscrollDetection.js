@@ -20,160 +20,138 @@
 
   var OnscrollDetection = /*#__PURE__*/function () {
     function OnscrollDetection(options) {
-      var _this = this;
       if (options === void 0) {
         options = {};
       }
-      this.init = function () {
-        /**
-         * Loop each element
-         */
-        gsap.utils.toArray(_this.elements).forEach(function (oElement, iIndex) {
-          /* Defaults */
-          var oTrigger,
-            gsapAnimation = null,
-            aAnimateFrom = [],
-            aAnimateTo = [],
-            iOffset = null,
-            iDistance = null,
-            iStart = 'top bottom',
-            iBottom = 'bottom top',
-            sScreen = _this.screen,
-            matchMedia = gsap.matchMedia();
-
-          /* Assign scroll trigger to element */
-          oTrigger = oElement;
-
-          /* Update media query conditions if they exist */
-          if (oElement.hasAttribute('data-onscroll-screen')) {
-            sScreen = oElement.dataset.onscrollScreen;
-          }
-
-          /* Determine custom from->to properties */
-          if (oElement.hasAttribute('data-onscroll-from')) {
-            aAnimateFrom = JSON.parse(oElement.dataset.onscrollFrom);
-          }
-          if (oElement.hasAttribute('data-onscroll-to')) {
-            aAnimateTo = JSON.parse(oElement.dataset.onscrollTo);
-          }
-
-          /* Set offset */
-          if (oElement.hasAttribute('data-onscroll-offset')) {
-            iOffset = parseInt(oElement.dataset.onscrollOffset);
-          }
-
-          /* Set distance */
-          if (oElement.hasAttribute('data-onscroll-distance')) {
-            iDistance = parseInt(oElement.dataset.onscrollDistance);
-          }
-
-          /* Get speed */
-          var fnGetSpeed = function fnGetSpeed() {
-            return (1 - parseFloat(oElement.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (_this.scrollTrigger ? _this.scrollTrigger.start : 0));
-          };
-
-          /* Determine auto */
-          if (oElement.hasAttribute('data-onscroll-auto')) {
-            oTrigger = oElement.parentElement;
-            iDistance = oElement.offsetHeight - oElement.parentElement.offsetHeight;
-          }
-
-          /* Get offset */
-          function fnGetOffset() {
-            if (oElement.hasAttribute('data-onscroll-reverse')) {
-              return iOffset ? +iOffset : null;
-            } else {
-              return iOffset ? -iOffset : null;
-            }
-          }
-
-          /* Get distance */
-          function fnGetDistance() {
-            if (oElement.hasAttribute('data-onscroll-auto')) {
-              return oElement.hasAttribute('data-onscroll-reverse') ? -iDistance : iDistance;
-            } else {
-              return oElement.hasAttribute('data-onscroll-reverse') ? -iDistance : iDistance;
-            }
-          }
-
-          /* Apply animations */
-          var fromProperties = _extends({}, aAnimateFrom, {
-            bottom: oElement.hasAttribute('data-onscroll-auto') && oElement.hasAttribute('data-onscroll-reverse') ? 'auto' : null,
-            top: oElement.hasAttribute('data-onscroll-auto') && !oElement.hasAttribute('data-onscroll-reverse') ? 'auto' : null,
-            x: oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'x' || oElement.dataset.onscrollDirection === 'xy') ? fnGetOffset() : null,
-            y: !oElement.hasAttribute('data-onscroll-direction') || oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'y' || oElement.dataset.onscrollDirection === 'xy') ? fnGetOffset() : null
-          });
-          var toProperties = _extends({}, aAnimateTo, {
-            x: function x() {
-              if (oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'x' || oElement.dataset.onscrollDirection === 'xy')) {
-                if (oElement.hasAttribute('data-onscroll-speed')) {
-                  return fnGetSpeed();
-                } else {
-                  return fnGetDistance();
-                }
-              }
-            },
-            y: function y() {
-              if (!oElement.hasAttribute('data-onscroll-direction') || oElement.hasAttribute('data-onscroll-direction') && (oElement.dataset.onscrollDirection === 'y' || oElement.dataset.onscrollDirection === 'xy')) {
-                if (oElement.hasAttribute('data-onscroll-speed')) {
-                  return fnGetSpeed();
-                } else {
-                  return fnGetDistance();
-                }
-              }
-            },
-            ease: 'none',
-            scrollTrigger: {
-              trigger: oElement.dataset.onscrollTrigger ? document.querySelector(oElement.dataset.onscrollTrigger) : oTrigger,
-              start: oElement.dataset.onscrollStart ? oElement.dataset.onscrollStart : iStart,
-              end: oElement.dataset.onscrollEnd ? oElement.dataset.onscrollEnd : iBottom,
-              invalidateOnRefresh: true,
-              scrub: true,
-              markers: oElement.hasAttribute('data-onscroll-debug') ? true : false
-            }
-          });
-          matchMedia.add(sScreen, function () {
-            gsapAnimation = gsap.fromTo(oElement, fromProperties, toProperties);
-
-            /* Store the ScrollTrigger instance and animation */
-            _this.scrollTriggers.push(gsapAnimation.scrollTrigger);
-            _this.animationsData.push({
-              oElement: oElement,
-              fromProperties: fromProperties,
-              toProperties: toProperties,
-              gsapAnimation: gsapAnimation
-            });
-          });
-
-          /* Debug mode */
-          if (oElement.hasAttribute('data-onscroll-debug')) {
-            console.group("OnscrollDetection() debug instance (" + (iIndex + 1) + ")");
-            console.log({
-              element: oElement,
-              auto: oElement.hasAttribute('data-onscroll-auto') ? true : false,
-              offset: iOffset,
-              distance: iDistance,
-              screen: sScreen,
-              speed: oElement.hasAttribute('data-onscroll-speed') ? oElement.dataset.onscrollSpeed + ' calculated at ' + (1 - parseFloat(oElement.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (_this.scrollTrigger ? _this.scrollTrigger.start : 0)) : null,
-              direction: oElement.hasAttribute('data-onscroll-direction') ? oElement.dataset.onscrollDirection : 'y',
-              reverse: oElement.hasAttribute('data-onscroll-reverse') ? true : false,
-              trigger: oTrigger,
-              triggerStart: iStart,
-              triggerEnd: iBottom,
-              animateFrom: oElement.hasAttribute('data-onscroll-to') ? JSON.parse(oElement.dataset.onscrollFrom) : null,
-              animateTo: oElement.hasAttribute('data-onscroll-to') ? JSON.parse(oElement.dataset.onscrollTo) : null
-            });
-            console.groupEnd();
-          }
-        });
-      };
       this.elements = options.elements || '[data-onscroll]';
       this.screen = options.screen || '(min-width: 768px)';
-      this.scrollTriggers = [];
-      this.animationsData = [];
+      this.scrollTriggers = new Map();
       this.init();
     }
     var _proto = OnscrollDetection.prototype;
+    _proto.init = function init() {
+      var _this = this;
+      gsap.utils.toArray(this.elements).forEach(function (element, index) {
+        var trigger = _this.getTrigger(element);
+        var screen = _this.getScreen(element);
+        var matchMedia = gsap.matchMedia();
+        var fromProperties = _this.getFromProperties(element, index);
+        var toProperties = _this.getToProperties(element, index, trigger);
+        matchMedia.add(screen, function () {
+          var gsapAnimation = gsap.fromTo(element, fromProperties, toProperties);
+          _this.scrollTriggers.set(gsapAnimation.scrollTrigger, {
+            element: element,
+            fromProperties: fromProperties,
+            toProperties: toProperties,
+            gsapAnimation: gsapAnimation
+          });
+        });
+        _this.debugMode(element, index);
+      });
+    }
+
+    // Helper methods
+    ;
+    _proto.getTrigger = function getTrigger(element) {
+      return element.hasAttribute('data-onscroll-auto') ? element.parentElement : element;
+    };
+    _proto.getScreen = function getScreen(element) {
+      return element.hasAttribute('data-onscroll-screen') ? element.dataset.onscrollScreen : this.screen;
+    };
+    _proto.getFromProperties = function getFromProperties(element, index) {
+      var animateFrom = this.getAnimateFrom(element);
+      var offset = this.getOffset(element);
+      return _extends({}, animateFrom, {
+        bottom: this.hasAttributes(element, ['data-onscroll-auto', 'data-onscroll-reverse']) ? 'auto' : null,
+        top: this.hasAttributes(element, ['data-onscroll-auto']) && !this.hasAttributes(element, ['data-onscroll-reverse']) ? 'auto' : null,
+        x: this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'x' || this.getDirection(element) === 'xy') ? offset : null,
+        y: !this.hasAttributes(element, ['data-onscroll-direction']) || this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'y' || this.getDirection(element) === 'xy') ? offset : null
+      });
+    };
+    _proto.getToProperties = function getToProperties(element, index, trigger) {
+      var animateTo = this.getAnimateTo(element);
+      return _extends({}, animateTo, {
+        x: this.getX(element),
+        y: this.getY(element),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: trigger,
+          start: this.getStart(element),
+          end: this.getEnd(element),
+          invalidateOnRefresh: true,
+          scrub: true,
+          markers: this.hasAttributes(element, ['data-onscroll-debug'])
+        }
+      });
+    };
+    _proto.hasAttributes = function hasAttributes(element, attrs) {
+      return attrs.every(function (attr) {
+        return element.hasAttribute(attr);
+      });
+    };
+    _proto.getAnimateFrom = function getAnimateFrom(element) {
+      return element.hasAttribute('data-onscroll-from') ? JSON.parse(element.dataset.onscrollFrom) : [];
+    };
+    _proto.getAnimateTo = function getAnimateTo(element) {
+      return element.hasAttribute('data-onscroll-to') ? JSON.parse(element.dataset.onscrollTo) : [];
+    };
+    _proto.getOffset = function getOffset(element) {
+      return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null;
+    };
+    _proto.getDirection = function getDirection(element) {
+      return element.dataset.onscrollDirection;
+    };
+    _proto.getX = function getX(element) {
+      if (this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'x' || this.getDirection(element) === 'xy')) {
+        return this.getDistanceOrSpeed(element);
+      }
+    };
+    _proto.getY = function getY(element) {
+      if (!this.hasAttributes(element, ['data-onscroll-direction']) || this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'y' || this.getDirection(element) === 'xy')) {
+        return this.getDistanceOrSpeed(element);
+      }
+    };
+    _proto.getDistanceOrSpeed = function getDistanceOrSpeed(element) {
+      if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+        return (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0));
+      } else {
+        var distance = parseInt(element.dataset.onscrollDistance);
+        if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+          distance = element.offsetHeight - element.parentElement.offsetHeight;
+        }
+        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+          return -distance;
+        }
+        return distance;
+      }
+    };
+    _proto.getStart = function getStart(element) {
+      return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
+    };
+    _proto.getEnd = function getEnd(element) {
+      return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
+    };
+    _proto.debugMode = function debugMode(element, index) {
+      if (this.hasAttributes(element, ['data-onscroll-debug'])) {
+        console.group("OnscrollDetection() debug instance (" + (index + 1) + ")");
+        console.log({
+          element: element,
+          trigger: this.getTrigger(element),
+          triggerStart: this.getStart(element),
+          triggerEnd: this.getEnd(element),
+          auto: this.hasAttributes(element, ['data-onscroll-auto']),
+          offset: this.getOffset(element),
+          distance: this.getDistanceOrSpeed(element),
+          screen: this.getScreen(element),
+          speed: this.hasAttributes(element, ['data-onscroll-speed']) ? element.dataset.onscrollSpeed + ' calculated at ' + (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0)) : null,
+          direction: this.hasAttributes(element, ['data-onscroll-direction']) ? element.dataset.onscrollDirection : 'y',
+          reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
+          animateFrom: this.getAnimateFrom(element),
+          animateTo: this.getAnimateTo(element)
+        });
+        console.groupEnd();
+      }
+    };
     _proto.refresh = function refresh() {
       ScrollTrigger.refresh();
     };
@@ -197,20 +175,36 @@
         target = null;
       }
       if (target) {
-        var index = this.scrollTriggers.indexOf(target);
-        if (index !== -1) {
-          this.animationsData[index].gsapAnimation.kill();
-          this.scrollTriggers.splice(index, 1);
-          this.animationsData.splice(index, 1);
+        var animationData = this.scrollTriggers.get(target);
+        if (animationData) {
+          animationData.gsapAnimation.kill();
+          this.scrollTriggers["delete"](target);
         }
       } else {
-        this.animationsData.forEach(function (_ref) {
+        this.scrollTriggers.forEach(function (_ref) {
           var gsapAnimation = _ref.gsapAnimation;
           gsapAnimation.kill();
         });
-        this.scrollTriggers = []; // Clear the ScrollTrigger instances array
-        this.animationsData = []; // Clear the animations data array
+        this.scrollTriggers.clear(); // Clear the ScrollTrigger instances map
       }
+    };
+    _proto.update = function update(target, fromProperties, toProperties) {
+      var animationData = this.scrollTriggers.get(target);
+      if (animationData) {
+        animationData.gsapAnimation.kill();
+
+        // Reinitialize the animation
+        var gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties);
+        this.scrollTriggers.set(gsapAnimation.scrollTrigger, _extends({}, animationData, {
+          fromProperties: fromProperties,
+          toProperties: toProperties,
+          gsapAnimation: gsapAnimation
+        }));
+      }
+    };
+    _proto.destroy = function destroy() {
+      this.stop();
+      this.scrollTriggers = null;
     };
     return OnscrollDetection;
   }();
