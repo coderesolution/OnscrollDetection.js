@@ -120,7 +120,20 @@ export default class OnscrollDetection {
 
 	// Get the offset value
 	getOffset(element) {
-		return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null
+		if (element.hasAttribute('data-onscroll-offset')) {
+			const offsetValue = element.dataset.onscrollOffset;
+			if (offsetValue.endsWith('%')) {
+				// Assuming the offset is relative to the height of the element
+				const percentage = parseInt(offsetValue.slice(0, -1));
+				return element.offsetHeight * (percentage / 100);
+			} else if (offsetValue.endsWith('px')) {
+				return parseInt(offsetValue.slice(0, -2));
+			} else {
+				return parseInt(offsetValue);
+			}
+		} else {
+			return null;
+		}
 	}
 
 	// Get the scroll direction
@@ -157,14 +170,26 @@ export default class OnscrollDetection {
 				(ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
 			)
 		} else {
-			let distance = parseInt(element.dataset.onscrollDistance)
-			if (this.hasAttributes(element, ['data-onscroll-auto'])) {
-				distance = element.offsetHeight - element.parentElement.offsetHeight
+			if (element.hasAttribute('data-onscroll-distance')) {
+				const distanceValue = element.dataset.onscrollDistance;
+				let distance;
+				if (distanceValue.endsWith('%')) {
+					// Assuming the distance is relative to the height of the element
+					const percentage = parseInt(distanceValue.slice(0, -1));
+					distance = element.offsetHeight * (percentage / 100);
+				} else if (distanceValue.endsWith('px')) {
+					distance = parseInt(distanceValue.slice(0, -2));
+				} else {
+					distance = parseInt(distanceValue);
+				}
+				if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+					distance = element.offsetHeight - element.parentElement.offsetHeight;
+				}
+				if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+					return -distance;
+				}
+				return distance;
 			}
-			if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-				return -distance
-			}
-			return distance
 		}
 	}
 
