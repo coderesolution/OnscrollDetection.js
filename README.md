@@ -88,7 +88,7 @@ Apply any of the following to `[data-onscroll]` element to apply custom settings
 | `data-onscroll-debug` | | Enables debug mode (enables GSAP markers and outputs helpful console information) |
 | `data-onscroll-auto` | | Automatically apply offset/distance if element exceeds the height of the parent container |
 | `data-onscroll-offset` | `number/string` | Apply on load offset by pixel value. You can use a single integer, or string with `px` or `%`. |
-| `data-onscroll-distance` | `number/string` | Distance moved in pixel value. You can use a single integer, or string with `px` or `%` |
+| `data-onscroll-distance` | `number/string` | Distance moved in pixel value. Set to `0` to reset any offset applied by `data-onscroll-offset`. You can use a single integer, or string with `px` or `%` |
 | `data-onscroll-delay` | `number` | Add "lag" so the element has to catch up with scroll, for example `5`. No lag is applied by default. |
 | `data-onscroll-speed` | `number` | Adjust the scroll speed, use only free-flowing elements (defaults to 1, lower the number the slower) |
 | `data-onscroll-reverse` | | Combine with offset/distance to scroll upward instead of down (no effect on speed) |
