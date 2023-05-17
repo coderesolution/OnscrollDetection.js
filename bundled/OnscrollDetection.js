@@ -110,7 +110,6 @@
           end: this.getEnd(element),
           invalidateOnRefresh: true,
           scrub: this.getScrub(element),
-          // Use the getScrub function here
           markers: this.hasAttributes(element, ['data-onscroll-debug'])
         }
       });
@@ -139,20 +138,7 @@
     // Get the offset value
     ;
     _proto.getOffset = function getOffset(element) {
-      if (element.hasAttribute('data-onscroll-offset')) {
-        var offsetValue = element.dataset.onscrollOffset;
-        if (offsetValue.endsWith('%')) {
-          // Assuming the offset is relative to the height of the element
-          var percentage = parseInt(offsetValue.slice(0, -1));
-          return element.offsetHeight * (percentage / 100);
-        } else if (offsetValue.endsWith('px')) {
-          return parseInt(offsetValue.slice(0, -2));
-        } else {
-          return parseInt(offsetValue);
-        }
-      } else {
-        return 0;
-      }
+      return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null;
     }
 
     // Get the scroll direction
@@ -183,26 +169,14 @@
       if (this.hasAttributes(element, ['data-onscroll-speed'])) {
         return (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0));
       } else {
-        if (element.hasAttribute('data-onscroll-distance')) {
-          var distanceValue = element.dataset.onscrollDistance;
-          var distance;
-          if (distanceValue.endsWith('%')) {
-            // Assuming the distance is relative to the height of the element
-            var percentage = parseInt(distanceValue.slice(0, -1));
-            distance = element.offsetHeight * (percentage / 100);
-          } else if (distanceValue.endsWith('px')) {
-            distance = parseInt(distanceValue.slice(0, -2));
-          } else {
-            distance = parseInt(distanceValue);
-          }
-          if (this.hasAttributes(element, ['data-onscroll-auto'])) {
-            distance = element.offsetHeight - element.parentElement.offsetHeight;
-          }
-          if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-            return -distance;
-          }
-          return distance;
+        var distance = parseInt(element.dataset.onscrollDistance);
+        if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+          distance = element.offsetHeight - element.parentElement.offsetHeight;
         }
+        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+          return -distance;
+        }
+        return distance;
       }
     }
 
@@ -229,47 +203,13 @@
     // Get the start value for ScrollTrigger animation
     ;
     _proto.getStart = function getStart(element) {
-      if (element.hasAttribute('data-onscroll-start')) {
-        return element.dataset.onscrollStart;
-      } else {
-        var offset = this.getOffset(element);
-        var reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
-
-        // If reverse is true, deduct the offset, otherwise add it
-        var adjustedOffset = reverse ? -offset : offset;
-
-        // Assuming the default start is 'top bottom'
-        // We'll add the offset to both 'top' and 'bottom' values
-        var _map = ['top', 'bottom'].map(function (value) {
-            return value + "+=" + adjustedOffset;
-          }),
-          top = _map[0],
-          bottom = _map[1];
-        return top + " " + bottom;
-      }
+      return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
     }
 
     // Get the end value for ScrollTrigger animation
     ;
     _proto.getEnd = function getEnd(element) {
-      if (element.hasAttribute('data-onscroll-end')) {
-        return element.dataset.onscrollEnd;
-      } else {
-        var offset = this.getOffset(element);
-        var reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
-
-        // If reverse is true, add the offset, otherwise deduct it
-        var adjustedOffset = reverse ? offset : -offset;
-
-        // Assuming the default end is 'bottom top'
-        // We'll add the offset to both 'bottom' and 'top' values
-        var _map2 = ['bottom', 'top'].map(function (value) {
-            return value + "+=" + adjustedOffset;
-          }),
-          bottom = _map2[0],
-          top = _map2[1];
-        return bottom + " " + top;
-      }
+      return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
     }
 
     // Enable debug mode for logging

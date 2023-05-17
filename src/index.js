@@ -97,7 +97,7 @@ export default class OnscrollDetection {
 				start: this.getStart(element),
 				end: this.getEnd(element),
 				invalidateOnRefresh: true,
-				scrub: this.getScrub(element), // Use the getScrub function here
+				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
 			},
 		}
@@ -120,20 +120,7 @@ export default class OnscrollDetection {
 
 	// Get the offset value
 	getOffset(element) {
-		if (element.hasAttribute('data-onscroll-offset')) {
-			const offsetValue = element.dataset.onscrollOffset;
-			if (offsetValue.endsWith('%')) {
-				// Assuming the offset is relative to the height of the element
-				const percentage = parseInt(offsetValue.slice(0, -1));
-				return element.offsetHeight * (percentage / 100);
-			} else if (offsetValue.endsWith('px')) {
-				return parseInt(offsetValue.slice(0, -2));
-			} else {
-				return parseInt(offsetValue);
-			}
-		} else {
-			return 0;
-		}
+		return element.hasAttribute('data-onscroll-offset') ? parseInt(element.dataset.onscrollOffset) : null
 	}
 
 	// Get the scroll direction
@@ -170,26 +157,14 @@ export default class OnscrollDetection {
 				(ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
 			)
 		} else {
-			if (element.hasAttribute('data-onscroll-distance')) {
-				const distanceValue = element.dataset.onscrollDistance;
-				let distance;
-				if (distanceValue.endsWith('%')) {
-					// Assuming the distance is relative to the height of the element
-					const percentage = parseInt(distanceValue.slice(0, -1));
-					distance = element.offsetHeight * (percentage / 100);
-				} else if (distanceValue.endsWith('px')) {
-					distance = parseInt(distanceValue.slice(0, -2));
-				} else {
-					distance = parseInt(distanceValue);
-				}
-				if (this.hasAttributes(element, ['data-onscroll-auto'])) {
-					distance = element.offsetHeight - element.parentElement.offsetHeight;
-				}
-				if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-					return -distance;
-				}
-				return distance;
+			let distance = parseInt(element.dataset.onscrollDistance)
+			if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+				distance = element.offsetHeight - element.parentElement.offsetHeight
 			}
+			if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+				return -distance
+			}
+			return distance
 		}
 	}
 
@@ -214,38 +189,12 @@ export default class OnscrollDetection {
 
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
-		if (element.hasAttribute('data-onscroll-start')) {
-			return element.dataset.onscrollStart;
-		} else {
-			const offset = this.getOffset(element);
-			const reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
-
-			// If reverse is true, deduct the offset, otherwise add it
-			const adjustedOffset = reverse ? -offset : offset;
-
-			// Assuming the default start is 'top bottom'
-			// We'll add the offset to both 'top' and 'bottom' values
-			const [top, bottom] = ['top', 'bottom'].map(value => `${value}+=${adjustedOffset}`);
-			return `${top} ${bottom}`;
-		}
+		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}
 
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
-		if (element.hasAttribute('data-onscroll-end')) {
-			return element.dataset.onscrollEnd;
-		} else {
-			const offset = this.getOffset(element);
-			const reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
-
-			// If reverse is true, add the offset, otherwise deduct it
-			const adjustedOffset = reverse ? offset : -offset;
-
-			// Assuming the default end is 'bottom top'
-			// We'll add the offset to both 'bottom' and 'top' values
-			const [bottom, top] = ['bottom', 'top'].map(value => `${value}+=${adjustedOffset}`);
-			return `${bottom} ${top}`;
-		}
+		return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
 	}
 
 	// Enable debug mode for logging
