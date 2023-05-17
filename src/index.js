@@ -97,7 +97,7 @@ export default class OnscrollDetection {
 				start: this.getStart(element),
 				end: this.getEnd(element),
 				invalidateOnRefresh: true,
-				scrub: true,
+				scrub: this.getScrub(element), // Use the getScrub function here
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
 			},
 		}
@@ -193,6 +193,25 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the delay value which controls the scrub setting
+	getScrub(element) {
+		if (element.hasAttribute('data-onscroll-delay')) {
+			let delayValue = element.dataset.onscrollDelay;
+			// Assuming the delayValue can be either an integer or a boolean
+			if (delayValue === 'true') {
+				return true;
+			} else if (delayValue === 'false') {
+				return false;
+			} else {
+				// Assuming the delayValue is an integer.
+				// Parse it to int and return.
+				return parseInt(delayValue);
+			}
+		} else {
+			return true;  // Default scrub value if no 'data-onscroll-delay' attribute is present
+		}
+	}
+
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
 		if (element.hasAttribute('data-onscroll-start')) {
@@ -241,6 +260,7 @@ export default class OnscrollDetection {
 				auto: this.hasAttributes(element, ['data-onscroll-auto']),
 				offset: this.getOffset(element),
 				distance: this.getDistanceOrSpeed(element),
+				delay: this.getScrub(element),
 				screen: this.getScreen(element),
 				speed: this.hasAttributes(element, ['data-onscroll-speed'])
 					? element.dataset.onscrollSpeed +
