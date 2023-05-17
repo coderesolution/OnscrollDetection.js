@@ -23,14 +23,16 @@
       if (options === void 0) {
         options = {};
       }
-      // Initialize class properties with default values or provided options
+      // Initialise class properties with default values or provided options
       this.elements = options.elements || '[data-onscroll]';
       this.screen = options.screen || '(min-width: 768px)';
       this.triggers = new Map();
 
-      // Initialize the class
+      // Initialise the class
       this.init();
     }
+
+    // Initialisation function
     var _proto = OnscrollDetection.prototype;
     _proto.init = function init() {
       var _this = this;

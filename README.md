@@ -8,7 +8,7 @@ A powerful javascript library to create parallax animations based on scroll dete
  - Specific px value, control from and to, modify scroll speed, or automatically calculate parallax based on parent
  - Custom animations (rotate, skew, colours and more)
  - Debugging mode
- - 4kb in size
+ - Lightweight (~2.4Kb gzipped)
 
 ## Dependencies
 The following <u>must</u> be instantiated before:
