@@ -94,7 +94,7 @@ Apply any of the following to `[data-onscroll]` element to apply custom settings
 | `data-onscroll-direction` | `string` | Animate vertically (`y`), horizontally (`x`), or both (`xy`) (defaults to 'y') |
 | `data-onscroll-trigger` | `string` | Attach ScrollTrigger to another DOM element |
 | `data-onscroll-start` | `string` | When animation begins (defaults to 'top bottom') |
-| `data-onscroll-end` | `string` | When animation ends (defaults to 'bottom top') |
+| `data-onscroll-end` | `string` | When animation ends (defaults to 'bottom top'). You can use `window.innerHeight` to get the viewport height. |
 | `data-onscroll-screen` | `string` | Add media query conditions, such as `(min-width: 500px)` or `(max-width: 1000px)` etc. |
 | `data-onscroll-from` | `json` | Custom gsap.from() properties. add JSON format to `data-onscroll-from` attribute, i.e. {"backgroundColor": "#fff", "rotation": "0"} |
 | `data-onscroll-to` | `json` | Custom gsap.to() properties. add JSON format to `data-onscroll-to` attribute, i.e. {"backgroundColor": "red", "rotation": "5"} |

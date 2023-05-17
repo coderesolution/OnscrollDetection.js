@@ -132,7 +132,7 @@ export default class OnscrollDetection {
 				return parseInt(offsetValue);
 			}
 		} else {
-			return null;
+			return 0;
 		}
 	}
 
@@ -195,12 +195,38 @@ export default class OnscrollDetection {
 
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
-		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
+		if (element.hasAttribute('data-onscroll-start')) {
+			return element.dataset.onscrollStart;
+		} else {
+			const offset = this.getOffset(element);
+			const reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
+
+			// If reverse is true, deduct the offset, otherwise add it
+			const adjustedOffset = reverse ? -offset : offset;
+
+			// Assuming the default start is 'top bottom'
+			// We'll add the offset to both 'top' and 'bottom' values
+			const [top, bottom] = ['top', 'bottom'].map(value => `${value}+=${adjustedOffset}`);
+			return `${top} ${bottom}`;
+		}
 	}
 
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
-		return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
+		if (element.hasAttribute('data-onscroll-end')) {
+			return element.dataset.onscrollEnd;
+		} else {
+			const offset = this.getOffset(element);
+			const reverse = this.hasAttributes(element, ['data-onscroll-reverse']);
+
+			// If reverse is true, add the offset, otherwise deduct it
+			const adjustedOffset = reverse ? offset : -offset;
+
+			// Assuming the default end is 'bottom top'
+			// We'll add the offset to both 'bottom' and 'top' values
+			const [bottom, top] = ['bottom', 'top'].map(value => `${value}+=${adjustedOffset}`);
+			return `${bottom} ${top}`;
+		}
 	}
 
 	// Enable debug mode for logging
