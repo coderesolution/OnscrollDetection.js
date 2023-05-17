@@ -9,6 +9,7 @@ export default class OnscrollDetection {
 		this.init()
 	}
 
+	// Initialisation function
 	init() {
 		// Convert elements to an array and loop through each
 		gsap.utils.toArray(this.elements).forEach((element, index) => {
