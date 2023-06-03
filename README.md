@@ -2,6 +2,20 @@
 
 A powerful javascript library to create parallax animations based on scroll detection. Powered by GSAP.
 
+## TO-DO
+ - [Patch] Prevent auto or reverse from automatically adjusting the start/end values
+ - [Patch] Offset/Distance to accept %, currently assumes all values are px
+ - [Patch] Adjust speed values to use multipliers, currently 0.99 and 1.01 are good values, this isn’t very pleasant.
+ - [Patch] Adjust start/end automatically if an offset has been set to avoid jumping when element comes into view.
+ - [Feature] Attach an element start/end to another trigger
+ - [Feature] Allow an element to be sticky/fixed to another element.
+ - [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
+ - [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
+ - [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
+ - [Consideration] Use “[0,0]” for offset/distance values.
+ - [Docs] Add code examples of every attribute, with a description
+ - [Docs] Add explanation as to what it is (streamlined animations via DOM) and what it is not (not replacing GSAP / JS animations)
+
 ## Features
  - Bind animation to any trigger element
  - Vertical/horizontal directions with reverse

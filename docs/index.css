@@ -187,6 +187,7 @@ meter {
 
 		.hero {
 			display: flex;
+			column-gap: 10px;
 			font-size: 150px;
 			justify-content: center;
 			line-height: 1em;
