@@ -48,7 +48,16 @@ export default class OnscrollDetection {
 
 	// Get the trigger element for ScrollTrigger
 	getTrigger(element) {
-		return element.hasAttribute('data-onscroll-trigger') ? element.parentElement : element
+	    if (this.hasAttributes(element, ['data-onscroll-auto']) && !element.hasAttribute('data-onscroll-trigger')) {
+	        // If data-onscroll-auto is present and data-onscroll-trigger is not, use the parent element as the trigger
+	        return element.parentElement;
+	    } else if (element.hasAttribute('data-onscroll-trigger')) {
+	        // If data-onscroll-trigger is present, use the parent element as the trigger
+	        return element.parentElement;
+	    } else {
+	        // Otherwise, use the element itself as the trigger
+	        return element;
+	    }
 	}
 
 	// Get the screen media query
@@ -85,22 +94,22 @@ export default class OnscrollDetection {
 
 	// Get the animation properties for 'to' state
 	getToProperties(element, index, trigger) {
-		const animateTo = this.getAnimateTo(element)
+	    const animateTo = this.getAnimateTo(element);
 
-		return {
-			...animateTo,
-			x: this.getX(element),
-			y: this.getY(element),
-			ease: 'none',
-			scrollTrigger: {
-				trigger: trigger,
-				start: this.getStart(element),
-				end: this.getEnd(element),
-				invalidateOnRefresh: true,
-				scrub: this.getScrub(element),
-				markers: this.hasAttributes(element, ['data-onscroll-debug']),
-			},
-		}
+	    return {
+	        ...animateTo,
+	        x: this.getX(element),
+	        y: this.getY(element),
+	        ease: 'none',
+	        scrollTrigger: {
+	            trigger: trigger,
+	            start: this.getStart(element),
+	            end: this.getEnd(element),
+	            invalidateOnRefresh: true,
+	            scrub: this.getScrub(element),
+	            markers: this.hasAttributes(element, ['data-onscroll-debug']),
+	        },
+	    }
 	}
 
 	// Check if an element has all the specified attributes
@@ -170,18 +179,8 @@ export default class OnscrollDetection {
 
 	// Get the delay value which controls the scrub setting
 	getScrub(element) {
-		if (element.hasAttribute('data-onscroll-delay')) {
-			let delayValue = element.dataset.onscrollDelay;
-			// Assuming the delayValue can be either an integer or a boolean
-			if (delayValue === 'true') {
-				return true;
-			} else if (delayValue === 'false') {
-				return false;
-			} else {
-				// Assuming the delayValue is an integer.
-				// Parse it to int and return.
-				return parseInt(delayValue);
-			}
+		if (this.hasAttributes(element, ['data-onscroll-delay'])) {
+			return parseInt(element.dataset.onscrollDelay);
 		} else {
 			return true;  // Default scrub value if no 'data-onscroll-delay' attribute is present
 		}

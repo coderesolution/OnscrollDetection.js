@@ -242,10 +242,10 @@ meter {
 
 				.image_src {
 					height: calc(100% + 200px);
-					left: 0;
+					left: -100px;
 					position: absolute;
 					bottom: 0;
-					width: calc(100% + 200px);
+					min-width: calc(100% + 200px);
 
 					&.-normal { bottom: 0; }
 					&.-reverse { bottom: 200px; }
