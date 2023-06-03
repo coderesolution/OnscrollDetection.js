@@ -7,6 +7,7 @@ A powerful javascript library to create parallax animations based on scroll dete
  - Vertical/horizontal directions with reverse
  - Specific px value, control from and to, modify scroll speed, or automatically calculate parallax based on parent
  - Custom animations (rotate, skew, colours and more)
+ - Target specific screen sizes
  - Debugging mode
  - Lightweight (~2.4Kb gzipped)
 

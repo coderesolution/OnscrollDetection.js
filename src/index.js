@@ -48,7 +48,7 @@ export default class OnscrollDetection {
 
 	// Get the trigger element for ScrollTrigger
 	getTrigger(element) {
-		return element.hasAttribute('data-onscroll-auto') ? element.parentElement : element
+		return element.hasAttribute('data-onscroll-trigger') ? element.parentElement : element
 	}
 
 	// Get the screen media query

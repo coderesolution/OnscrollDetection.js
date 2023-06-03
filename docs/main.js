@@ -19,10 +19,7 @@ function raf(time) {
 requestAnimationFrame(raf)
 
 /* Initialise OnscrollDetection.js */
-const onscroll = new OnscrollDetection({
-	elements: '[data-onscroll]',
-	screen: '(min-width: 1000px)'
-});
+const onscroll = new OnscrollDetection();
 
 // setTimeout( () => {
 //
