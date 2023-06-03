@@ -200,7 +200,7 @@ export default class OnscrollDetection {
 	// Enable debug mode for logging
 	debugMode(element, index) {
 		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
-			console.group(`OnscrollDetection() debug instance (${index + 1})`)
+			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 			console.log({
 				element: element,
 				trigger: this.getTrigger(element),
