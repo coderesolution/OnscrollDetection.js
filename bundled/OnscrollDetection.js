@@ -232,7 +232,7 @@
           additionalDistance *= -1;
         }
       } else {
-        scrollSpeed = parseFloat(scrollSpeed || "0");
+        scrollSpeed = parseFloat(scrollSpeed || '0');
       }
       if (this.hasAttributes(element, ['data-onscroll-auto'])) {
         var triggerElement = this.getTrigger(element);
