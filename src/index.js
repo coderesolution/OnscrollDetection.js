@@ -191,25 +191,19 @@ export default class OnscrollDetection {
 
 	// Get the distance or speed value for ScrollTrigger animation
 	getDistanceOrSpeed(element) {
-	    let { distance } = this.getOffsetAndDistance(element);
+	    const { distance } = this.getOffsetAndDistance(element);
+	    const scrollSpeed = parseFloat(element.dataset.onscrollSpeed || "0");
 
 	    if (this.hasAttributes(element, ['data-onscroll-auto'])) {
 	        const triggerElement = this.getTrigger(element);
-	        distance = Math.abs(triggerElement.offsetHeight - element.offsetHeight);
-	        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-	            return -distance;
-	        }
-	        return distance;
+	        const autoDistance = Math.abs(triggerElement.offsetHeight - element.offsetHeight);
+	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -autoDistance : autoDistance;
 	    } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-	        return (
-	            (1 - parseFloat(element.dataset.onscrollSpeed)) *
-	            (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
-	        );
+	        const totalScrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
+	        const scrollDistance = scrollSpeed * totalScrollableDistance;
+	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance;
 	    } else if (distance !== null) {
-	        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-	            return -distance;
-	        }
-	        return distance;
+	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance;
 	    }
 	}
 

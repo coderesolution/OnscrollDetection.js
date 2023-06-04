@@ -4,7 +4,6 @@ A powerful javascript library to create parallax animations based on scroll dete
 
 ## TO-DO
  - [Patch] Adjust speed values to use multipliers, currently 0.99 and 1.01 are good values, this isn’t very pleasant.
- - [Feature] Attach an element start/end to another trigger
  - [Feature] Allow an element to be sticky/fixed to another element.
  - [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
  - [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
@@ -104,7 +103,7 @@ Apply any of the following to `[data-onscroll]` element to apply custom settings
 | `data-onscroll-offset` | `number/string` | Expects two values, like `[0,0]`. The first is a before animation offset and the second is an after animation offset. They can integers for px value or `%`. Percentages are based on the element height. |
 | `data-onscroll-distance` | `number/string` | Distance moved in pixel value. Set to `0` to reset any offset applied by `data-onscroll-offset`. You can use a single integer, or string with `px` or `%` |
 | `data-onscroll-delay` | `number` | Add "lag" so the element has to catch up with scroll, for example `5`. No lag is applied by default. |
-| `data-onscroll-speed` | `number` | Adjust the scroll speed, use only free-flowing elements (defaults to 1, lower the number the slower) |
+| `data-onscroll-speed` | `number` | Adjust the scroll speed, use only free-flowing elements to achieve a parallax effect. It should be a decimal between -1 and 1, representing the proportion of the viewport height that the element should move for each pixel of scrolling. When the scroll speed is 1, it will calculate the total scrollable distance, so the element will move by the same amount of pixels as the page is scrolled. When the scroll speed is 0.5, the element will move half the total scrollable distance, which means it will move by 0.5 pixels for each pixel scrolled, and so on. |
 | `data-onscroll-reverse` | | Combine with offset/distance to scroll upward instead of down (no effect on speed) |
 | `data-onscroll-direction` | `string` | Animate vertically (`y`), horizontally (`x`), or both (`xy`) (defaults to 'y') |
 | `data-onscroll-trigger` | `string` | Attach ScrollTrigger to another DOM element |
