@@ -252,6 +252,21 @@ meter {
 
 				}
 
+		.buttons {
+			align-items: center;
+			column-gap: 20px;
+			display: flex;
+			justify-content: center;
+		}
+
+			.buttons button {
+				background: #fff;
+				border-radius: 4px;
+				color: #000;
+				font-size: 16px;
+				line-height: 1em;
+				padding: .75em 1em;
+			}
 
 	&.-wip .section_label { background: rgba(255,99,71,.75); }
 

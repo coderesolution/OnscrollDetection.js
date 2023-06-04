@@ -21,9 +21,33 @@ requestAnimationFrame(raf)
 /* Initialise OnscrollDetection.js */
 const onscroll = new OnscrollDetection();
 
-// setTimeout( () => {
-//
-// 	alert('restart!')
-// 	onscroll.restart()
-//
-// }, 2000 );
+/* Buttons */
+// const oButtons = document.querySelectorAll( '.js-button' );
+
+// oButtons.forEach( oButton => {
+
+// 	oButton.addEventListener( 'click', ( e ) => {
+
+// 		e.preventDefault()
+
+// 		switch( oButton.dataset.method ) {
+// 			case 'refresh':
+// 			inview.refresh()
+// 			break;
+
+// 			case 'stop':
+// 			inview.stop()
+// 			break;
+
+// 			case 'restart':
+// 			inview.restart()
+// 			break;
+
+// 			default:
+// 			console.log( 'No method' )
+
+// 		}
+
+// 	})
+
+// });

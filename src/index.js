@@ -161,11 +161,32 @@ export default class OnscrollDetection {
 
 	// Get the offset and distance values
 	getOffsetAndDistance(element) {
-		if (element.hasAttribute('data-onscroll-offset')) {
-			const [offset, distance] = element.dataset.onscrollOffset.split(',').map(Number);
-			return { offset, distance };
-		}
-		return { offset: null, distance: null };
+	    let offset = null;
+	    let distance = null;
+	    const triggerElement = this.getTrigger(element);
+	    const triggerHeight = triggerElement.offsetHeight;
+
+	    if (element.hasAttribute('data-onscroll-offset')) {
+	        const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',');
+
+	        // If the offset value ends with a '%', calculate it as a percentage of the trigger height
+	        if (offsetValue.trim().endsWith('%')) {
+	            const offsetPercentage = parseFloat(offsetValue) / 100;
+	            offset = offsetPercentage * triggerHeight;
+	        } else {
+	            offset = parseFloat(offsetValue);
+	        }
+
+	        // If the distance value ends with a '%', calculate it as a percentage of the trigger height
+	        if (distanceValue.trim().endsWith('%')) {
+	            const distancePercentage = parseFloat(distanceValue) / 100;
+	            distance = distancePercentage * triggerHeight;
+	        } else {
+	            distance = parseFloat(distanceValue);
+	        }
+	    }
+
+	    return { offset, distance };
 	}
 
 	// Get the distance or speed value for ScrollTrigger animation
