@@ -22,32 +22,32 @@ requestAnimationFrame(raf)
 const onscroll = new OnscrollDetection();
 
 /* Buttons */
-// const oButtons = document.querySelectorAll( '.js-button' );
+const oButtons = document.querySelectorAll( '.js-button' );
 
-// oButtons.forEach( oButton => {
+oButtons.forEach( oButton => {
 
-// 	oButton.addEventListener( 'click', ( e ) => {
+	oButton.addEventListener( 'click', ( e ) => {
 
-// 		e.preventDefault()
+		e.preventDefault()
 
-// 		switch( oButton.dataset.method ) {
-// 			case 'refresh':
-// 			inview.refresh()
-// 			break;
+		switch( oButton.dataset.method ) {
+			case 'refresh':
+			onscroll.refresh()
+			break;
 
-// 			case 'stop':
-// 			inview.stop()
-// 			break;
+			case 'stop':
+			onscroll.stop()
+			break;
 
-// 			case 'restart':
-// 			inview.restart()
-// 			break;
+			case 'restart':
+			onscroll.restart()
+			break;
 
-// 			default:
-// 			console.log( 'No method' )
+			default:
+			console.log( 'No method' )
 
-// 		}
+		}
 
-// 	})
+	})
 
-// });
+});
