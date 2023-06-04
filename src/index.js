@@ -214,6 +214,7 @@ export default class OnscrollDetection {
 	// Enable debug mode for logging
 	debugMode(element, index) {
 		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
+        	const { offset, distance } = this.getOffsetAndDistance(element);
 			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 			console.log({
 				element: element,
@@ -221,10 +222,10 @@ export default class OnscrollDetection {
 				triggerStart: this.getStart(element),
 				triggerEnd: this.getEnd(element),
 				auto: this.hasAttributes(element, ['data-onscroll-auto']),
-				offset: this.getOffset(element),
-				distance: this.getDistanceOrSpeed(element),
-				delay: this.getScrub(element),
-				screen: this.getScreen(element),
+				offsetBefore: offset,
+	            offsetAfter: this.getDistanceOrSpeed(element),
+	            delay: this.getScrub(element),
+	            screen: this.getScreen(element),
 				speed: this.hasAttributes(element, ['data-onscroll-speed'])
 					? element.dataset.onscrollSpeed +
 					  ' calculated at ' +
