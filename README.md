@@ -20,7 +20,7 @@ A powerful javascript library to create parallax animations based on scroll dete
  - Custom animations (rotate, skew, colours and more)
  - Target specific screen sizes
  - Debugging mode
- - Lightweight (~2.4Kb gzipped)
+ - Lightweight before dependencies (~1.81Kb gzipped)
 
 ## Dependencies
 The following <u>must</u> be instantiated before:

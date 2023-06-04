@@ -15,8 +15,12 @@ export default class OnscrollDetection {
     getDirection(element: any): any;
     getX(element: any): number;
     getY(element: any): number;
+    getOffsetAndDistance(element: any): {
+        offset: number;
+        distance: number;
+    };
     getDistanceOrSpeed(element: any): number;
-    getScrub(element: any): number | boolean;
+    getScrub(element: any): number | true;
     getStart(element: any): any;
     getEnd(element: any): any;
     debugMode(element: any, index: any): void;
