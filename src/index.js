@@ -48,16 +48,16 @@ export default class OnscrollDetection {
 
 	// Get the trigger element for ScrollTrigger
 	getTrigger(element) {
-	    if (this.hasAttributes(element, ['data-onscroll-auto']) && !element.hasAttribute('data-onscroll-trigger')) {
-	        // If data-onscroll-auto is present and data-onscroll-trigger is not, use the parent element as the trigger
-	        return element.parentElement;
-	    } else if (element.hasAttribute('data-onscroll-trigger')) {
-	        // If data-onscroll-trigger is present, use the parent element as the trigger
-	        return element.parentElement;
-	    } else {
-	        // Otherwise, use the element itself as the trigger
-	        return element;
-	    }
+		if (this.hasAttributes(element, ['data-onscroll-auto']) && !element.hasAttribute('data-onscroll-trigger')) {
+			// If data-onscroll-auto is present and data-onscroll-trigger is not, use the parent element as the trigger
+			return element.parentElement
+		} else if (element.hasAttribute('data-onscroll-trigger')) {
+			// If data-onscroll-trigger is present, use the parent element as the trigger
+			return element.parentElement
+		} else {
+			// Otherwise, use the element itself as the trigger
+			return element
+		}
 	}
 
 	// Get the screen media query
@@ -67,8 +67,8 @@ export default class OnscrollDetection {
 
 	// Get the animation properties for 'from' state
 	getFromProperties(element, index) {
-		const animateFrom = this.getAnimateFrom(element);
-		const { offset } = this.getOffsetAndDistance(element);
+		const animateFrom = this.getAnimateFrom(element)
+		const { offset } = this.getOffsetAndDistance(element)
 
 		return {
 			...animateFrom,
@@ -94,23 +94,23 @@ export default class OnscrollDetection {
 
 	// Get the animation properties for 'to' state
 	getToProperties(element, index, trigger) {
-		const animateTo = this.getAnimateTo(element);
-		const { offset } = this.getOffsetAndDistance(element);
+		const animateTo = this.getAnimateTo(element)
+		const { offset } = this.getOffsetAndDistance(element)
 
-	    return {
-	        ...animateTo,
-	        x: this.getX(element),
-	        y: this.getY(element),
-	        ease: 'none',
-	        scrollTrigger: {
-	            trigger: trigger,
-	            start: this.getStart(element),
-	            end: this.getEnd(element),
-	            invalidateOnRefresh: true,
-	            scrub: this.getScrub(element),
-	            markers: this.hasAttributes(element, ['data-onscroll-debug']),
-	        },
-	    }
+		return {
+			...animateTo,
+			x: this.getX(element),
+			y: this.getY(element),
+			ease: 'none',
+			scrollTrigger: {
+				trigger: trigger,
+				start: this.getStart(element),
+				end: this.getEnd(element),
+				invalidateOnRefresh: true,
+				scrub: this.getScrub(element),
+				markers: this.hasAttributes(element, ['data-onscroll-debug']),
+			},
+		}
 	}
 
 	// Check if an element has all the specified attributes
@@ -161,76 +161,76 @@ export default class OnscrollDetection {
 
 	// Get the offset and distance values
 	getOffsetAndDistance(element) {
-	    let offset = null;
-	    let distance = null;
-	    const triggerElement = this.getTrigger(element);
-	    const triggerHeight = triggerElement.offsetHeight;
+		let offset = null
+		let distance = null
+		const triggerElement = this.getTrigger(element)
+		const triggerHeight = triggerElement.offsetHeight
 
-	    if (element.hasAttribute('data-onscroll-offset')) {
-	        const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',');
+		if (element.hasAttribute('data-onscroll-offset')) {
+			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
 
-	        // If the offset value ends with a '%', calculate it as a percentage of the trigger height
-	        if (offsetValue.trim().endsWith('%')) {
-	            const offsetPercentage = parseFloat(offsetValue) / 100;
-	            offset = offsetPercentage * triggerHeight;
-	        } else {
-	            offset = parseFloat(offsetValue);
-	        }
+			// If the offset value ends with a '%', calculate it as a percentage of the trigger height
+			if (offsetValue.trim().endsWith('%')) {
+				const offsetPercentage = parseFloat(offsetValue) / 100
+				offset = offsetPercentage * triggerHeight
+			} else {
+				offset = parseFloat(offsetValue)
+			}
 
-	        // If the distance value ends with a '%', calculate it as a percentage of the trigger height
-	        if (distanceValue.trim().endsWith('%')) {
-	            const distancePercentage = parseFloat(distanceValue) / 100;
-	            distance = distancePercentage * triggerHeight;
-	        } else {
-	            distance = parseFloat(distanceValue);
-	        }
-	    }
+			// If the distance value ends with a '%', calculate it as a percentage of the trigger height
+			if (distanceValue.trim().endsWith('%')) {
+				const distancePercentage = parseFloat(distanceValue) / 100
+				distance = distancePercentage * triggerHeight
+			} else {
+				distance = parseFloat(distanceValue)
+			}
+		}
 
-	    return { offset, distance };
+		return { offset, distance }
 	}
 
 	// Get the distance or speed value for ScrollTrigger animation
 	getDistanceOrSpeed(element) {
-	    const { distance } = this.getOffsetAndDistance(element);
-	    const viewportHeight = window.innerHeight;
-	    let scrollSpeed = element.dataset.onscrollSpeed;
-	    let additionalDistance = 0;
+		const { distance } = this.getOffsetAndDistance(element)
+		const viewportHeight = window.innerHeight
+		let scrollSpeed = element.dataset.onscrollSpeed
+		let additionalDistance = 0
 
-	    // Check if there are two values
-	    if (scrollSpeed && scrollSpeed.includes(',')) {
-	        const [speed, percentage] = scrollSpeed.split(',').map(parseFloat);
+		// Check if there are two values
+		if (scrollSpeed && scrollSpeed.includes(',')) {
+			const [speed, percentage] = scrollSpeed.split(',').map(parseFloat)
 
-	        // Update the scrollSpeed and calculate the additional distance
-	        scrollSpeed = speed;
-	        additionalDistance = (percentage / 100) * viewportHeight;
+			// Update the scrollSpeed and calculate the additional distance
+			scrollSpeed = speed
+			additionalDistance = (percentage / 100) * viewportHeight
 
-	        // If scrollSpeed is negative, subtract the additional distance
-	        if (scrollSpeed < 0) {
-	            additionalDistance *= -1;
-	        }
-	    } else {
-	        scrollSpeed = parseFloat(scrollSpeed || "0");
-	    }
+			// If scrollSpeed is negative, subtract the additional distance
+			if (scrollSpeed < 0) {
+				additionalDistance *= -1
+			}
+		} else {
+			scrollSpeed = parseFloat(scrollSpeed || '0')
+		}
 
-	    if (this.hasAttributes(element, ['data-onscroll-auto'])) {
-	        const triggerElement = this.getTrigger(element);
-	        const autoDistance = Math.abs(triggerElement.offsetHeight - element.offsetHeight);
-	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -autoDistance : autoDistance;
-	    } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-	        const elementHeight = element.offsetHeight;
-	        const scrollDistance = scrollSpeed * elementHeight + additionalDistance;
-	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance;
-	    } else if (distance !== null) {
-	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance;
-	    }
+		if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+			const triggerElement = this.getTrigger(element)
+			const autoDistance = Math.abs(triggerElement.offsetHeight - element.offsetHeight)
+			return this.hasAttributes(element, ['data-onscroll-reverse']) ? -autoDistance : autoDistance
+		} else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+			const elementHeight = element.offsetHeight
+			const scrollDistance = scrollSpeed * elementHeight + additionalDistance
+			return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance
+		} else if (distance !== null) {
+			return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance
+		}
 	}
 
 	// Get the delay value which controls the scrub setting
 	getScrub(element) {
 		if (this.hasAttributes(element, ['data-onscroll-delay'])) {
-			return parseInt(element.dataset.onscrollDelay);
+			return parseInt(element.dataset.onscrollDelay)
 		} else {
-			return true;  // Default scrub value if no 'data-onscroll-delay' attribute is present
+			return true // Default scrub value if no 'data-onscroll-delay' attribute is present
 		}
 	}
 
@@ -241,23 +241,20 @@ export default class OnscrollDetection {
 
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
-
 		if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
-		    const scrollDistance = this.getDistanceOrSpeed(element);
-		    const { distance } = this.getOffsetAndDistance(element);
-		    
-		    return `bottom${scrollDistance >= 0 ? '+=' : '-='}${Math.abs(scrollDistance)} top`;
+			const scrollDistance = this.getDistanceOrSpeed(element)
+			const { distance } = this.getOffsetAndDistance(element)
 
+			return `bottom${scrollDistance >= 0 ? '+=' : '-='}${Math.abs(scrollDistance)} top`
 		} else {
-			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
+			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
 		}
-
 	}
 
 	// Enable debug mode for logging
 	debugMode(element, index) {
 		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
-        	const { offset, distance } = this.getOffsetAndDistance(element);
+			const { offset, distance } = this.getOffsetAndDistance(element)
 			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 			console.log({
 				element: element,
@@ -266,9 +263,9 @@ export default class OnscrollDetection {
 				triggerEnd: this.getEnd(element),
 				auto: this.hasAttributes(element, ['data-onscroll-auto']),
 				offsetBefore: offset,
-	            offsetAfter: this.getDistanceOrSpeed(element),
-	            delay: this.getScrub(element),
-	            screen: this.getScreen(element),
+				offsetAfter: this.getDistanceOrSpeed(element),
+				delay: this.getScrub(element),
+				screen: this.getScreen(element),
 				speed: this.hasAttributes(element, ['data-onscroll-speed'])
 					? element.dataset.onscrollSpeed +
 					  ' calculated at ' +
