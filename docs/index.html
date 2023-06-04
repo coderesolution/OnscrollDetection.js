@@ -130,21 +130,20 @@
 				<div class="boxes">
 					<div class="box"
 						data-onscroll
-						data-onscroll-offset="0,100%">100% distance</div>
+						data-onscroll-speed="0,10">10% viewport</div>
 					<div class="box"
 						data-onscroll
-						data-onscroll-speed="-.01"
-						data-onscroll-reverse>.01 (reverse)</div>
+						data-onscroll-speed="0,10"
+						data-onscroll-reverse>10% viewport (reverse)</div>
 					<div class="box"
 						data-onscroll
-						data-onscroll-speed="1">1</div>
+						data-onscroll-speed="1,10">x1 + 10% viewport</div>
 					<div class="box"
 						data-onscroll
-						data-onscroll-speed=".01">.01</div>
-					<div class="box"
+						data-onscroll-speed="1,15">x1 + 15% viewport</div>
+						<div class="box"
 						data-onscroll
-						data-onscroll-speed=".02"
-						data-onscroll-reverse>.02 (reverse)</div>
+						data-onscroll-speed="-.5,0">-x0.5</div>
 				</div>
 			</div>
 		</section>
@@ -310,7 +309,7 @@
 				<div class="boxes">
 					<div class="box"
 						data-onscroll
-						data-onscroll-offset="150,0"
+						data-onscroll-offset="0,150"
 						data-onscroll-from='{"backgroundColor": "#fff", "rotation": "0", "scale": 0.5}'
 						data-onscroll-to='{"backgroundColor": "yellow", "rotation": "-360", "scale": 1}'
 						data-onscroll-debug>Element</div>

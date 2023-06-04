@@ -192,7 +192,25 @@ export default class OnscrollDetection {
 	// Get the distance or speed value for ScrollTrigger animation
 	getDistanceOrSpeed(element) {
 	    const { distance } = this.getOffsetAndDistance(element);
-	    const scrollSpeed = parseFloat(element.dataset.onscrollSpeed || "0");
+	    const viewportHeight = window.innerHeight;
+	    let scrollSpeed = element.dataset.onscrollSpeed;
+	    let additionalDistance = 0;
+
+	    // Check if there are two values
+	    if (scrollSpeed && scrollSpeed.includes(',')) {
+	        const [speed, percentage] = scrollSpeed.split(',').map(parseFloat);
+
+	        // Update the scrollSpeed and calculate the additional distance
+	        scrollSpeed = speed;
+	        additionalDistance = (percentage / 100) * viewportHeight;
+
+	        // If scrollSpeed is negative, subtract the additional distance
+	        if (scrollSpeed < 0) {
+	            additionalDistance *= -1;
+	        }
+	    } else {
+	        scrollSpeed = parseFloat(scrollSpeed || "0");
+	    }
 
 	    if (this.hasAttributes(element, ['data-onscroll-auto'])) {
 	        const triggerElement = this.getTrigger(element);
@@ -200,7 +218,7 @@ export default class OnscrollDetection {
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -autoDistance : autoDistance;
 	    } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
 	        const elementHeight = element.offsetHeight;
-	        const scrollDistance = scrollSpeed * elementHeight;
+	        const scrollDistance = scrollSpeed * elementHeight + additionalDistance;
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance;
 	    } else if (distance !== null) {
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance;
@@ -223,7 +241,17 @@ export default class OnscrollDetection {
 
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
-		return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
+
+		if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
+		    const scrollDistance = this.getDistanceOrSpeed(element);
+		    const { distance } = this.getOffsetAndDistance(element);
+		    
+		    return `bottom${scrollDistance >= 0 ? '+=' : '-='}${Math.abs(scrollDistance)} top`;
+
+		} else {
+			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
+		}
+
 	}
 
 	// Enable debug mode for logging

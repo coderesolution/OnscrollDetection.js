@@ -3,7 +3,6 @@
 A powerful javascript library to create parallax animations based on scroll detection. Powered by GSAP.
 
 ## TO-DO
- - [Patch] Adjust speed values to use multipliers, currently 0.99 and 1.01 are good values, this isn’t very pleasant.
  - [Feature] Allow an element to be sticky/fixed to another element.
  - [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
  - [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
@@ -103,7 +102,7 @@ Apply any of the following to `[data-onscroll]` element to apply custom settings
 | `data-onscroll-offset` | `number/string` | Expects two values, like `[0,0]`. The first is a before animation offset and the second is an after animation offset. They can integers for px value or `%`. Percentages are based on the element height. |
 | `data-onscroll-distance` | `number/string` | Distance moved in pixel value. Set to `0` to reset any offset applied by `data-onscroll-offset`. You can use a single integer, or string with `px` or `%` |
 | `data-onscroll-delay` | `number` | Add "lag" so the element has to catch up with scroll, for example `5`. No lag is applied by default. |
-| `data-onscroll-speed` | `number` | Multiply the height of the element to determine a scroll speed. Note, `data-onscroll-speed="1"` would be the same as writing `data-onscroll-offset="0,100%"` |
+| `data-onscroll-speed` | `string` | Expects two values, like `[1,0]`. Multiply the height of the element to determine a scroll speed and then add the percentage of the viewport. Note, `data-onscroll-speed="1,0"` would be the same as writing `data-onscroll-offset="0,100%"` |
 | `data-onscroll-reverse` | | Combine with offset/distance to scroll upward instead of down (no effect on speed) |
 | `data-onscroll-direction` | `string` | Animate vertically (`y`), horizontally (`x`), or both (`xy`) (defaults to 'y') |
 | `data-onscroll-trigger` | `string` | Attach ScrollTrigger to another DOM element |
