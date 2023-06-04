@@ -67,8 +67,8 @@ export default class OnscrollDetection {
 
 	// Get the animation properties for 'from' state
 	getFromProperties(element, index) {
-		const animateFrom = this.getAnimateFrom(element)
-		const offset = this.getOffset(element)
+		const animateFrom = this.getAnimateFrom(element);
+		const { offset } = this.getOffsetAndDistance(element);
 
 		return {
 			...animateFrom,
@@ -94,7 +94,8 @@ export default class OnscrollDetection {
 
 	// Get the animation properties for 'to' state
 	getToProperties(element, index, trigger) {
-	    const animateTo = this.getAnimateTo(element);
+		const animateTo = this.getAnimateTo(element);
+		const { offset } = this.getOffsetAndDistance(element);
 
 	    return {
 	        ...animateTo,
@@ -158,23 +159,37 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Get the offset and distance values
+	getOffsetAndDistance(element) {
+		if (element.hasAttribute('data-onscroll-offset')) {
+			const [offset, distance] = element.dataset.onscrollOffset.split(',').map(Number);
+			return { offset, distance };
+		}
+		return { offset: null, distance: null };
+	}
+
 	// Get the distance or speed value for ScrollTrigger animation
 	getDistanceOrSpeed(element) {
-		if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-			return (
-				(1 - parseFloat(element.dataset.onscrollSpeed)) *
-				(ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
-			)
-		} else {
-			let distance = parseInt(element.dataset.onscrollDistance)
-			if (this.hasAttributes(element, ['data-onscroll-auto'])) {
-				distance = element.offsetHeight - element.parentElement.offsetHeight
-			}
-			if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
-				return -distance
-			}
-			return distance
-		}
+	    let { distance } = this.getOffsetAndDistance(element);
+
+	    if (this.hasAttributes(element, ['data-onscroll-auto'])) {
+	        const triggerElement = this.getTrigger(element);
+	        distance = Math.abs(triggerElement.offsetHeight - element.offsetHeight);
+	        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+	            return -distance;
+	        }
+	        return distance;
+	    } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+	        return (
+	            (1 - parseFloat(element.dataset.onscrollSpeed)) *
+	            (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
+	        );
+	    } else if (distance !== null) {
+	        if (this.hasAttributes(element, ['data-onscroll-reverse'])) {
+	            return -distance;
+	        }
+	        return distance;
+	    }
 	}
 
 	// Get the delay value which controls the scrub setting
