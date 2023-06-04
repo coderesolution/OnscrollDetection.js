@@ -199,8 +199,8 @@ export default class OnscrollDetection {
 	        const autoDistance = Math.abs(triggerElement.offsetHeight - element.offsetHeight);
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -autoDistance : autoDistance;
 	    } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-	        const totalScrollableDistance = document.documentElement.scrollHeight - window.innerHeight;
-	        const scrollDistance = scrollSpeed * totalScrollableDistance;
+	        const elementHeight = element.offsetHeight;
+	        const scrollDistance = scrollSpeed * elementHeight;
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance;
 	    } else if (distance !== null) {
 	        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance;
