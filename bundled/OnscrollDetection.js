@@ -78,8 +78,14 @@
         // If data-onscroll-auto is present and data-onscroll-trigger is not, use the parent element as the trigger
         return element.parentElement;
       } else if (element.hasAttribute('data-onscroll-trigger')) {
-        // If data-onscroll-trigger is present, use the parent element as the trigger
-        return element.parentElement;
+        // If data-onscroll-trigger is present, try to find the DOM element specified by the attribute
+        var triggerElement = document.querySelector(element.dataset.onscrollTrigger);
+        if (triggerElement) {
+          return triggerElement;
+        } else {
+          console.error("Element specified by data-onscroll-trigger not found: " + element.dataset.onscrollTrigger);
+          return element;
+        }
       } else {
         // Otherwise, use the element itself as the trigger
         return element;
@@ -232,7 +238,7 @@
           additionalDistance *= -1;
         }
       } else {
-        scrollSpeed = parseFloat(scrollSpeed || "0");
+        scrollSpeed = parseFloat(scrollSpeed || '0');
       }
       if (this.hasAttributes(element, ['data-onscroll-auto'])) {
         var triggerElement = this.getTrigger(element);
