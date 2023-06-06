@@ -77,14 +77,14 @@ You can configure OnscrollDetection.js via options:
 ```js
 const onscroll = new OnscrollDetection({
 	elements: '[data-onscroll]',
-	screen: '(min-width: 768px)'
+	screen: '(min-width: 1025px)'
 });
 ```
 
 | Name | Type | Description |
 | :--- | :---: | :--- |
 | `elements` | `string` | Trigger elements, defaults to `data-onscroll` |
-| `screen` | `string` | Set media query conditions via matchMedia to target specific screen sizes (defaults to `'(min-width: 768px)'`) |
+| `screen` | `string` | Set media query conditions via matchMedia to target specific screen sizes (defaults to `'(min-width: 1025px)'`) |
 
 ## Instructions
 

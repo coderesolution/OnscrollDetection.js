@@ -2,7 +2,7 @@ export default class OnscrollDetection {
 	constructor(options = {}) {
 		// Initialise class properties with default values or provided options
 		this.elements = options.elements || '[data-onscroll]'
-		this.screen = options.screen || '(min-width: 768px)'
+		this.screen = options.screen || '(min-width: 1025px)'
 		this.triggers = new Map()
 
 		// Initialise the class
