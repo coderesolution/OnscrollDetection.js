@@ -12,7 +12,7 @@ A powerful javascript library to create parallax animations based on scroll dete
  - [Test] Test compatibility with SmoothScroller and native (alternative to Lenis)
  - [Docs] Add code examples of every attribute, with a description
  - [Docs] Add explanation as to what it is (streamlined animations via DOM) and what it is not (not replacing GSAP / JS animations)
- - [Consideration] Option to disable repeat (scrub)
+ - [Consideration] Option to disable repeat (set `once: true`)
 
 ## Features
  - Bind animation to any trigger element
