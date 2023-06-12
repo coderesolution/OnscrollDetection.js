@@ -268,6 +268,35 @@ meter {
 				padding: .75em 1em;
 			}
 
+		.sticky {
+			align-items: flex-start;
+			color: #000;
+			column-gap: 20px;
+			display: flex;
+			justify-content: center;
+			outline: 1px dashed tomato;
+		}
+
+			.sticky_element {
+				background: #fff;
+				border-radius: 4px;
+				font-size: 16px;
+				width: 500px;
+			}
+
+			.sticky_side {
+				font-size: 16px;
+			}
+
+				.sticky_side_box {
+					background: #fff;
+					border-radius: 4px;
+					padding: 30px;
+					width: 500px;
+				}
+
+				.sticky_side_box:not(:last-child) { margin-bottom: 20px; }
+
 	&.-wip .section_label { background: rgba(255,99,71,.75); }
 
 }
