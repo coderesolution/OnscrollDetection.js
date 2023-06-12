@@ -104,7 +104,6 @@ export default class OnscrollDetection {
 	// Get the animation properties for 'to' state
 	getToProperties(element, index, trigger) {
 		const animateTo = this.getAnimateTo(element)
-		const { offset } = this.getOffsetAndDistance(element)
 		const stickyProperties = this.getStickyProperties(element)
 
 		return {
@@ -113,7 +112,7 @@ export default class OnscrollDetection {
 			y: this.getY(element),
 			ease: 'none',
 			scrollTrigger: {
-				trigger: trigger,
+				trigger: this.hasAttributes(element, ['data-onscroll-sticky']) ? element : trigger,
 				start: this.getStart(element),
 				end: this.getEnd(element),
 				invalidateOnRefresh: true,
@@ -161,6 +160,9 @@ export default class OnscrollDetection {
 
 	// Get the 'x' value for ScrollTrigger animation
 	getX(element) {
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return null
+		}
 		if (
 			this.hasAttributes(element, ['data-onscroll-direction']) &&
 			(this.getDirection(element) === 'x' || this.getDirection(element) === 'xy')
@@ -171,6 +173,9 @@ export default class OnscrollDetection {
 
 	// Get the 'y' value for ScrollTrigger animation
 	getY(element) {
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return null
+		}
 		if (
 			!this.hasAttributes(element, ['data-onscroll-direction']) ||
 			(this.hasAttributes(element, ['data-onscroll-direction']) &&
@@ -182,6 +187,11 @@ export default class OnscrollDetection {
 
 	// Get the offset and distance values
 	getOffsetAndDistance(element) {
+		// Check if the element has the data-onscroll-sticky attribute
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return { offset: null, distance: null }
+		}
+
 		let offset = null
 		let distance = null
 		const triggerElement = this.getTrigger(element)
@@ -258,7 +268,14 @@ export default class OnscrollDetection {
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
 		if (element.hasAttribute('data-onscroll-sticky')) {
-			return 'top 0'
+			let stickyOffset = 0
+
+			if (element.hasAttribute('data-onscroll-offset')) {
+				const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
+				stickyOffset = parseFloat(offsetValue)
+			}
+
+			return ( element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top' ) + '+=' + stickyOffset
 		}
 		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}
@@ -266,7 +283,17 @@ export default class OnscrollDetection {
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
 		if (element.hasAttribute('data-onscroll-sticky')) {
-			return '+=500'
+			const trigger = this.getTrigger(element)
+			let stickyOffset = 0
+
+			if (element.hasAttribute('data-onscroll-offset')) {
+				const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
+				stickyOffset = parseFloat(distanceValue)
+			}
+
+			const stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset
+
+			return '+=' + stickyDistance
 		} else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
 			const scrollDistance = this.getDistanceOrSpeed(element)
 			const { distance } = this.getOffsetAndDistance(element)

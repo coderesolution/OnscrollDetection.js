@@ -151,7 +151,7 @@
 				</div>
 			</div>
 		</section>
-		<section id="fixed" class="section -fixed -wip">
+		<section id="fixed" class="section -fixed">
 			<div class="section_label">
 				<div class="label_heading">Fixed/Sticky</div>
 				<div class="label_description">
@@ -161,12 +161,12 @@
 			<div class="section_canvas">
 				<div class="sticky">
 					<aside class="sticky_side">
-						<div class="sticky_side_box -sticky" data-onscroll data-onscroll-sticky data-onscroll-debug>Sticky!</div>
-						<!--
-						1. Trigger: Attach to element, which determines height. Keep element as trigger is sticky exists.
-						2. Start: Change default to `top` but allow override, i.e. `center`, `bottom` or other.
-						2. End: Change default to trigger height minus element but allow override, i.e. `center`, `bottom` or other.
-						-->
+						<div class="sticky_side_box -sticky"
+						data-onscroll
+						data-onscroll-sticky
+						data-onscroll-offset="50,100"
+						data-onscroll-start="top top"
+						data-onscroll-trigger="#stickyTrigger">Sticky!</div>
 					</aside>
 					<aside id="stickyTrigger" class="sticky_side">
 						<div class="sticky_side_box">Placeholder</div>
