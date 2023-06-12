@@ -31,6 +31,7 @@ export default class OnscrollDetection {
 			// Add the animation to the matchMedia instance and store the ScrollTrigger instance
 			const animation = matchMedia.add(screen, () => {
 				const gsapAnimation = gsap.fromTo(element, fromProperties, toProperties)
+
 				this.triggers.set(gsapAnimation.scrollTrigger, {
 					element,
 					fromProperties,
@@ -53,12 +54,14 @@ export default class OnscrollDetection {
 			return element.parentElement
 		} else if (element.hasAttribute('data-onscroll-trigger')) {
 			// If data-onscroll-trigger is present, try to find the DOM element specified by the attribute
-			let triggerElement = document.querySelector(element.dataset.onscrollTrigger);
+			let triggerElement = document.querySelector(element.dataset.onscrollTrigger)
 			if (triggerElement) {
-				return triggerElement;
+				return triggerElement
 			} else {
-				console.error(`Element specified by data-onscroll-trigger not found: ${element.dataset.onscrollTrigger}`);
-				return element;
+				console.error(
+					`Element specified by data-onscroll-trigger not found: ${element.dataset.onscrollTrigger}`
+				)
+				return element
 			}
 		} else {
 			// Otherwise, use the element itself as the trigger
@@ -102,6 +105,7 @@ export default class OnscrollDetection {
 	getToProperties(element, index, trigger) {
 		const animateTo = this.getAnimateTo(element)
 		const { offset } = this.getOffsetAndDistance(element)
+		const stickyProperties = this.getStickyProperties(element)
 
 		return {
 			...animateTo,
@@ -113,9 +117,20 @@ export default class OnscrollDetection {
 				start: this.getStart(element),
 				end: this.getEnd(element),
 				invalidateOnRefresh: true,
+				pin: stickyProperties.pin,
+				pinSpacing: stickyProperties.pinSpacing,
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
 			},
+		}
+	}
+
+	// Get the sticky properties for ScrollTrigger animation
+	getStickyProperties(element) {
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return { pin: true, pinSpacing: false }
+		} else {
+			return { pin: false, pinSpacing: true }
 		}
 	}
 
@@ -242,12 +257,17 @@ export default class OnscrollDetection {
 
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return 'top 40px'
+		}
 		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}
 
 	// Get the end value for ScrollTrigger animation
 	getEnd(element) {
-		if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
+		if (element.hasAttribute('data-onscroll-sticky')) {
+			return '+=500'
+		} else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
 			const scrollDistance = this.getDistanceOrSpeed(element)
 			const { distance } = this.getOffsetAndDistance(element)
 
@@ -282,6 +302,7 @@ export default class OnscrollDetection {
 					? element.dataset.onscrollDirection
 					: 'y',
 				reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
+				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
 				animateFrom: this.getAnimateFrom(element),
 				animateTo: this.getAnimateTo(element),
 			})

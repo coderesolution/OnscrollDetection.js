@@ -269,7 +269,7 @@ meter {
 			}
 
 		.sticky {
-			align-items: flex-start;
+			align-items: stretch;
 			color: #000;
 			column-gap: 20px;
 			display: flex;
