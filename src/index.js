@@ -258,7 +258,7 @@ export default class OnscrollDetection {
 	// Get the start value for ScrollTrigger animation
 	getStart(element) {
 		if (element.hasAttribute('data-onscroll-sticky')) {
-			return 'top 40px'
+			return 'top 0'
 		}
 		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}

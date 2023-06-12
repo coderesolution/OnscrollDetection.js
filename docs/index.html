@@ -162,6 +162,11 @@
 				<div class="sticky">
 					<aside class="sticky_side">
 						<div class="sticky_side_box -sticky" data-onscroll data-onscroll-sticky data-onscroll-debug>Sticky!</div>
+						<!--
+						1. Trigger: Attach to element, which determines height. Keep element as trigger is sticky exists.
+						2. Start: Change default to `top` but allow override, i.e. `center`, `bottom` or other.
+						2. End: Change default to trigger height minus element but allow override, i.e. `center`, `bottom` or other.
+						-->
 					</aside>
 					<aside id="stickyTrigger" class="sticky_side">
 						<div class="sticky_side_box">Placeholder</div>
