@@ -116,20 +116,38 @@
     ;
     _proto.getToProperties = function getToProperties(element, index, trigger) {
       var animateTo = this.getAnimateTo(element);
-      this.getOffsetAndDistance(element);
+      var stickyProperties = this.getStickyProperties(element);
       return _extends({}, animateTo, {
         x: this.getX(element),
         y: this.getY(element),
         ease: 'none',
         scrollTrigger: {
-          trigger: trigger,
+          trigger: this.hasAttributes(element, ['data-onscroll-sticky']) ? element : trigger,
           start: this.getStart(element),
           end: this.getEnd(element),
           invalidateOnRefresh: true,
+          pin: stickyProperties.pin,
+          pinSpacing: stickyProperties.pinSpacing,
           scrub: this.getScrub(element),
           markers: this.hasAttributes(element, ['data-onscroll-debug'])
         }
       });
+    }
+
+    // Get the sticky properties for ScrollTrigger animation
+    ;
+    _proto.getStickyProperties = function getStickyProperties(element) {
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        return {
+          pin: true,
+          pinSpacing: false
+        };
+      } else {
+        return {
+          pin: false,
+          pinSpacing: true
+        };
+      }
     }
 
     // Check if an element has all the specified attributes
@@ -167,6 +185,9 @@
     // Get the 'x' value for ScrollTrigger animation
     ;
     _proto.getX = function getX(element) {
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        return null;
+      }
       if (this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'x' || this.getDirection(element) === 'xy')) {
         return this.getDistanceOrSpeed(element);
       }
@@ -175,6 +196,9 @@
     // Get the 'y' value for ScrollTrigger animation
     ;
     _proto.getY = function getY(element) {
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        return null;
+      }
       if (!this.hasAttributes(element, ['data-onscroll-direction']) || this.hasAttributes(element, ['data-onscroll-direction']) && (this.getDirection(element) === 'y' || this.getDirection(element) === 'xy')) {
         return this.getDistanceOrSpeed(element);
       }
@@ -183,6 +207,13 @@
     // Get the offset and distance values
     ;
     _proto.getOffsetAndDistance = function getOffsetAndDistance(element) {
+      // Check if the element has the data-onscroll-sticky attribute
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        return {
+          offset: null,
+          distance: null
+        };
+      }
       var offset = null;
       var distance = null;
       var triggerElement = this.getTrigger(element);
@@ -217,8 +248,8 @@
     // Get the distance or speed value for ScrollTrigger animation
     ;
     _proto.getDistanceOrSpeed = function getDistanceOrSpeed(element) {
-      var _this$getOffsetAndDis3 = this.getOffsetAndDistance(element),
-        distance = _this$getOffsetAndDis3.distance;
+      var _this$getOffsetAndDis2 = this.getOffsetAndDistance(element),
+        distance = _this$getOffsetAndDis2.distance;
       var viewportHeight = window.innerHeight;
       var scrollSpeed = element.dataset.onscrollSpeed;
       var additionalDistance = 0;
@@ -266,13 +297,32 @@
     // Get the start value for ScrollTrigger animation
     ;
     _proto.getStart = function getStart(element) {
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        var stickyOffset = 0;
+        if (element.hasAttribute('data-onscroll-offset')) {
+          var _element$dataset$onsc2 = element.dataset.onscrollOffset.split(','),
+            offsetValue = _element$dataset$onsc2[0];
+          stickyOffset = parseFloat(offsetValue);
+        }
+        return (element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top') + '+=' + stickyOffset;
+      }
       return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
     }
 
     // Get the end value for ScrollTrigger animation
     ;
     _proto.getEnd = function getEnd(element) {
-      if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
+      if (element.hasAttribute('data-onscroll-sticky')) {
+        var trigger = this.getTrigger(element);
+        var stickyOffset = 0;
+        if (element.hasAttribute('data-onscroll-offset')) {
+          var _element$dataset$onsc3 = element.dataset.onscrollOffset.split(','),
+            distanceValue = _element$dataset$onsc3[1];
+          stickyOffset = parseFloat(distanceValue);
+        }
+        var stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset;
+        return '+=' + stickyDistance;
+      } else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
         var scrollDistance = this.getDistanceOrSpeed(element);
         this.getOffsetAndDistance(element);
         return "bottom" + (scrollDistance >= 0 ? '+=' : '-=') + Math.abs(scrollDistance) + " top";
@@ -285,8 +335,8 @@
     ;
     _proto.debugMode = function debugMode(element, index) {
       if (this.hasAttributes(element, ['data-onscroll-debug'])) {
-        var _this$getOffsetAndDis5 = this.getOffsetAndDistance(element),
-          offset = _this$getOffsetAndDis5.offset;
+        var _this$getOffsetAndDis4 = this.getOffsetAndDistance(element),
+          offset = _this$getOffsetAndDis4.offset;
         console.group("OnscrollDetection() debug instance (#" + (index + 1) + ")");
         console.log({
           element: element,
@@ -301,6 +351,7 @@
           speed: this.hasAttributes(element, ['data-onscroll-speed']) ? element.dataset.onscrollSpeed + ' calculated at ' + (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0)) : null,
           direction: this.hasAttributes(element, ['data-onscroll-direction']) ? element.dataset.onscrollDirection : 'y',
           reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
+          sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
           animateFrom: this.getAnimateFrom(element),
           animateTo: this.getAnimateTo(element)
         });

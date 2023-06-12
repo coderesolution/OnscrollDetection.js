@@ -8,6 +8,10 @@ export default class OnscrollDetection {
     getScreen(element: any): any;
     getFromProperties(element: any, index: any): any;
     getToProperties(element: any, index: any, trigger: any): any;
+    getStickyProperties(element: any): {
+        pin: boolean;
+        pinSpacing: boolean;
+    };
     hasAttributes(element: any, attrs: any): any;
     getAnimateFrom(element: any): any;
     getAnimateTo(element: any): any;
