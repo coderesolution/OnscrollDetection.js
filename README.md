@@ -3,6 +3,7 @@
 A powerful javascript library to create parallax animations based on scroll detection. Powered by GSAP.
 
 ## TO-DO
+ - [Feature] Add classes, such as `is-scrolling` and `has-scrolled`, and `is-sticky`, `has-stuck` etc.
  - [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
  - [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
  - [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
