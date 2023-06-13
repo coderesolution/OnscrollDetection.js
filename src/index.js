@@ -342,6 +342,11 @@ export default class OnscrollDetection {
 	debugMode(element, index) {
 		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
 			const { offset, distance } = this.getOffsetAndDistance(element)
+			let speedMultiplier
+			let speedViewportPercentage
+			if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+				[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',')
+			}
 			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 			console.log({
 				element: element,
@@ -354,10 +359,7 @@ export default class OnscrollDetection {
 				delay: this.getScrub(element),
 				screen: this.getScreen(element),
 				speed: this.hasAttributes(element, ['data-onscroll-speed'])
-					? element.dataset.onscrollSpeed +
-					  ' calculated at ' +
-					  (1 - parseFloat(element.dataset.onscrollSpeed)) *
-							(ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0))
+					? parseFloat((speedMultiplier * element.clientHeight) + (speedViewportPercentage / 100 * window.innerHeight)) + ' (' + parseFloat(speedMultiplier) + 'x element height + ' + parseFloat(speedViewportPercentage) + '% of the viewport height)'
 					: null,
 				direction: this.hasAttributes(element, ['data-onscroll-direction'])
 					? element.dataset.onscrollDirection
