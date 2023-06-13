@@ -150,12 +150,14 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
 					}
+					this.emit('enter', element)
 				},
 				onLeave: () => {
 					element.classList.remove(this.classDefaults.scrollingClass)
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
+					this.emit('leave', element)
 				},
 				onEnterBack: () => {
 					element.classList.add(this.classDefaults.scrollingClass)

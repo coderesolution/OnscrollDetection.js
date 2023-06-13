@@ -60,6 +60,12 @@ oButtons.forEach( oButton => {
 });
 
 /* Event listeners */
+onscroll.on('enter', (element) => {
+	console.log('Entering view:', element );
+});
+onscroll.on('leave', (element) => {
+	console.log('Leaving view:', element );
+});
 onscroll.on('refresh', () => {
 	console.log('Refreshed');
 });

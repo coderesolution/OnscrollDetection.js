@@ -166,6 +166,20 @@ const onscroll = new OnscrollDetection({
 
 ### Methods
 
+#### Element enters viewport
+```js
+onscroll.on('enter', (element) => {
+	console.log('Entering view:', element );
+});
+```
+
+#### Element leaves viewport
+```js
+onscroll.on('leave', (element) => {
+	console.log('Leaving view:', element );
+});
+```
+
 #### Refresh
 
 ```js
