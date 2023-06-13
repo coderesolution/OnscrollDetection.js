@@ -43,7 +43,7 @@ oButtons.forEach( oButton => {
 			break;
 
 			case 'stop':
-			onscroll.stop()
+			onscroll.stop(1)
 			break;
 
 			case 'restart':
@@ -57,4 +57,15 @@ oButtons.forEach( oButton => {
 
 	})
 
+});
+
+/* Event listeners */
+onscroll.on('refresh', () => {
+	console.log('Refreshed');
+});
+onscroll.on('restart', () => {
+	console.log('Restarted');
+});
+onscroll.on('stop', (target) => {
+	console.log(`Stopped: ${target}`);
 });

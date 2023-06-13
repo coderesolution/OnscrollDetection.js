@@ -14,6 +14,9 @@ export default class OnscrollDetection {
 			...options.classDefaults,
 		}
 
+		// Initialise event handlers
+		this.eventHandlers = {}
+
 		// Initialise the class
 		this.init()
 	}
@@ -55,6 +58,18 @@ export default class OnscrollDetection {
 	}
 
 	// Helper methods
+	on(event, handler) {
+		if (!this.eventHandlers[event]) {
+			this.eventHandlers[event] = []
+		}
+		this.eventHandlers[event].push(handler)
+	}
+
+	emit(event, ...args) {
+		if (this.eventHandlers[event]) {
+			this.eventHandlers[event].forEach((handler) => handler(...args))
+		}
+	}
 
 	// Get the trigger element for ScrollTrigger
 	getTrigger(element) {
@@ -345,7 +360,7 @@ export default class OnscrollDetection {
 			let speedMultiplier
 			let speedViewportPercentage
 			if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-				[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',')
+				;[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',')
 			}
 			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 			console.log({
@@ -359,7 +374,15 @@ export default class OnscrollDetection {
 				delay: this.getScrub(element),
 				screen: this.getScreen(element),
 				speed: this.hasAttributes(element, ['data-onscroll-speed'])
-					? parseFloat((speedMultiplier * element.clientHeight) + (speedViewportPercentage / 100 * window.innerHeight)) + ' (' + parseFloat(speedMultiplier) + 'x element height + ' + parseFloat(speedViewportPercentage) + '% of the viewport height)'
+					? parseFloat(
+							speedMultiplier * element.clientHeight +
+								(speedViewportPercentage / 100) * window.innerHeight
+					  ) +
+					  ' (' +
+					  parseFloat(speedMultiplier) +
+					  'x element height + ' +
+					  parseFloat(speedViewportPercentage) +
+					  '% of the viewport height)'
 					: null,
 				direction: this.hasAttributes(element, ['data-onscroll-direction'])
 					? element.dataset.onscrollDirection
@@ -376,6 +399,9 @@ export default class OnscrollDetection {
 	// Refresh ScrollTrigger instances
 	refresh() {
 		ScrollTrigger.refresh()
+
+		// Emit event after refresh is done
+		this.emit('refresh')
 	}
 
 	// Restart the animations and reinitialize the ScrollTrigger instances
@@ -391,6 +417,9 @@ export default class OnscrollDetection {
 
 		// Reapply animations and initialize ScrollTrigger
 		this.init()
+
+		// Emit event after restart is done
+		this.emit('restart')
 	}
 
 	// Stop animations and ScrollTriggers
@@ -409,6 +438,9 @@ export default class OnscrollDetection {
 			})
 			this.triggers.clear()
 		}
+
+		// Emit event after stop is done
+		this.emit('stop', target)
 	}
 
 	// Update animation for a specific target with new fromProperties and toProperties

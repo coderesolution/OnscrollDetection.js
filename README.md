@@ -145,7 +145,7 @@ Stop and restart animations.
 onscroll.restart();
 ```
 
-## Classes
+### Classes
  - 'is-scrolling' is applied to every element temporarily when it is in view.
  - 'has-scrolled' is applied to every element permanently when it has been in view.
  - 'is-sticky' is applied to every sticky element ([data-onscroll-sticky]) temporarily when it is in view.
@@ -163,6 +163,33 @@ const onscroll = new OnscrollDetection({
 	}
 });
 ```
+
+### Methods
+
+#### Refresh
+
+```js
+onscroll.on('refresh', () => {
+	console.log('Refreshed');
+});
+```
+
+#### Stop
+
+```js
+onscroll.on('stop', (target) => {
+	console.log(`Stopped: ${target}`);
+});
+```
+
+#### Restart
+
+```js
+onscroll.on('restart', () => {
+	console.log('Restarted');
+});
+```
+
 
 ## Examples of use
 
