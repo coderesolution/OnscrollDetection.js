@@ -19,7 +19,14 @@ function raf(time) {
 requestAnimationFrame(raf)
 
 /* Initialise OnscrollDetection.js */
-const onscroll = new OnscrollDetection();
+const onscroll = new OnscrollDetection({
+	classDefaults: {
+		scrollingClass: 'custom-scrolling',
+		scrolledClass: 'custom-scrolled',
+		stickyClass: 'custom-sticky',
+		stuckClass: 'custom-stuck'
+	}
+});
 
 /* Buttons */
 const oButtons = document.querySelectorAll( '.js-button' );

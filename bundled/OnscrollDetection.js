@@ -28,6 +28,14 @@
       this.screen = options.screen || '(min-width: 1025px)';
       this.triggers = new Map();
 
+      // Set class names to defaults or provided options
+      this.classDefaults = _extends({
+        scrollingClass: 'is-scrolling',
+        scrolledClass: 'has-scrolled',
+        stickyClass: 'is-sticky',
+        stuckClass: 'has-stuck'
+      }, options.classDefaults);
+
       // Initialise the class
       this.init();
     }
@@ -115,21 +123,47 @@
     // Get the animation properties for 'to' state
     ;
     _proto.getToProperties = function getToProperties(element, index, trigger) {
+      var _this2 = this;
       var animateTo = this.getAnimateTo(element);
       var stickyProperties = this.getStickyProperties(element);
+      var isSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
       return _extends({}, animateTo, {
         x: this.getX(element),
         y: this.getY(element),
         ease: 'none',
         scrollTrigger: {
-          trigger: this.hasAttributes(element, ['data-onscroll-sticky']) ? element : trigger,
+          trigger: isSticky ? element : trigger,
           start: this.getStart(element),
           end: this.getEnd(element),
           invalidateOnRefresh: true,
           pin: stickyProperties.pin,
           pinSpacing: stickyProperties.pinSpacing,
           scrub: this.getScrub(element),
-          markers: this.hasAttributes(element, ['data-onscroll-debug'])
+          markers: this.hasAttributes(element, ['data-onscroll-debug']),
+          onEnter: function onEnter() {
+            element.classList.add(_this2.classDefaults.scrollingClass, _this2.classDefaults.scrolledClass);
+            if (isSticky) {
+              element.classList.add(_this2.classDefaults.stickyClass, _this2.classDefaults.stuckClass);
+            }
+          },
+          onLeave: function onLeave() {
+            element.classList.remove(_this2.classDefaults.scrollingClass);
+            if (isSticky) {
+              element.classList.remove(_this2.classDefaults.stickyClass);
+            }
+          },
+          onEnterBack: function onEnterBack() {
+            element.classList.add(_this2.classDefaults.scrollingClass);
+            if (isSticky) {
+              element.classList.add(_this2.classDefaults.stickyClass);
+            }
+          },
+          onLeaveBack: function onLeaveBack() {
+            element.classList.remove(_this2.classDefaults.scrollingClass);
+            if (isSticky) {
+              element.classList.remove(_this2.classDefaults.stickyClass);
+            }
+          }
         }
       });
     }

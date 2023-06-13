@@ -3,6 +3,7 @@ export default class OnscrollDetection {
     elements: any;
     screen: any;
     triggers: Map<any, any>;
+    classDefaults: any;
     init(): void;
     getTrigger(element: any): any;
     getScreen(element: any): any;

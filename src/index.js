@@ -5,6 +5,15 @@ export default class OnscrollDetection {
 		this.screen = options.screen || '(min-width: 1025px)'
 		this.triggers = new Map()
 
+		// Set class names to defaults or provided options
+		this.classDefaults = {
+			scrollingClass: 'is-scrolling',
+			scrolledClass: 'has-scrolled',
+			stickyClass: 'is-sticky',
+			stuckClass: 'has-stuck',
+			...options.classDefaults,
+		}
+
 		// Initialise the class
 		this.init()
 	}
@@ -122,27 +131,27 @@ export default class OnscrollDetection {
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
 				onEnter: () => {
-					element.classList.add('is-scrolling', 'has-scrolled')
+					element.classList.add(this.classDefaults.scrollingClass, this.classDefaults.scrolledClass)
 					if (isSticky) {
-						element.classList.add('is-sticky', 'has-stuck')
+						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
 					}
 				},
 				onLeave: () => {
-					element.classList.remove('is-scrolling')
+					element.classList.remove(this.classDefaults.scrollingClass)
 					if (isSticky) {
-						element.classList.remove('is-sticky')
+						element.classList.remove(this.classDefaults.stickyClass)
 					}
 				},
 				onEnterBack: () => {
-					element.classList.add('is-scrolling')
+					element.classList.add(this.classDefaults.scrollingClass)
 					if (isSticky) {
-						element.classList.add('is-sticky')
+						element.classList.add(this.classDefaults.stickyClass)
 					}
 				},
 				onLeaveBack: () => {
-					element.classList.remove('is-scrolling')
+					element.classList.remove(this.classDefaults.scrollingClass)
 					if (isSticky) {
-						element.classList.remove('is-sticky')
+						element.classList.remove(this.classDefaults.stickyClass)
 					}
 				},
 			},

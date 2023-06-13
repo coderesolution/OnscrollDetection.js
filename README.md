@@ -3,7 +3,6 @@
 A powerful javascript library to create parallax animations based on scroll detection. Powered by GSAP.
 
 ## TO-DO
- - [Feature] Add classes, such as `is-scrolling` and `has-scrolled`, and `is-sticky`, `has-stuck` etc.
  - [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
  - [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
  - [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
@@ -17,12 +16,13 @@ A powerful javascript library to create parallax animations based on scroll dete
 
 ## Features
  - Bind animation to any trigger element
+ - Classes
  - Vertical/horizontal directions with reverse
  - Specific px value, control from and to, modify scroll speed, or automatically calculate parallax based on parent
  - Custom animations (rotate, skew, colours and more)
  - Target specific screen sizes
  - Debugging mode
- - Lightweight before dependencies (~1.81Kb gzipped)
+ - Lightweight before dependencies (~2.19Kb gzipped)
 
 ## Dependencies
 The following <u>must</u> be instantiated before:
@@ -144,6 +144,25 @@ Stop and restart all animations.
 
 ```js
 onscroll.restart();
+```
+
+## Classes
+ - 'is-scrolling' is applied to every element temporarily when it is in view.
+ - 'has-scrolled' is applied to every element permanently when it has been in view.
+ - 'is-sticky' is applied to every sticky element ([data-onscroll-sticky]) temporarily when it is in view.
+ - 'has-stuck' is applied to every sticky element ([data-onscroll-sticky]) permanently when it has been in view.
+
+These can be overwritten if desired, like so:
+```js
+/* Initialise OnscrollDetection with custom classes */
+const onscroll = new OnscrollDetection({
+	classDefaults: {
+		scrollingClass: 'custom-scrolling', // defaults to 'is-scrolling'
+		scrolledClass: 'custom-scrolled', // defaults to 'has-scrolled'
+		stickyClass: 'custom-sticky', // defaults to 'has-sticky'
+		stuckClass: 'custom-stuck' // defaults to 'has-stuck'
+	}
+});
 ```
 
 ## Examples of use
