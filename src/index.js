@@ -398,6 +398,24 @@ export default class OnscrollDetection {
 		}
 	}
 
+	// Fetch a trigger
+	fetch(elementOrIndex) {
+		if (typeof elementOrIndex === 'number') {
+			// Treat argument as an index
+			const keys = Array.from(this.triggers.keys());
+			return keys[elementOrIndex];
+		} else {
+			// Assume argument is a DOM element
+			let trigger = null;
+			this.triggers.forEach((value, key) => {
+				if (value.element === elementOrIndex) {
+					trigger = key;
+				}
+			});
+			return trigger;
+		}
+	}
+
 	// Refresh ScrollTrigger instances
 	refresh() {
 		ScrollTrigger.refresh()

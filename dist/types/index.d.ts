@@ -4,7 +4,10 @@ export default class OnscrollDetection {
     screen: any;
     triggers: Map<any, any>;
     classDefaults: any;
+    eventHandlers: {};
     init(): void;
+    on(event: any, handler: any): void;
+    emit(event: any, ...args: any[]): void;
     getTrigger(element: any): any;
     getScreen(element: any): any;
     getFromProperties(element: any, index: any): any;
@@ -29,6 +32,7 @@ export default class OnscrollDetection {
     getStart(element: any): any;
     getEnd(element: any): any;
     debugMode(element: any, index: any): void;
+    fetch(elementOrIndex: any): any;
     refresh(): void;
     restart(): void;
     stop(target?: any): void;

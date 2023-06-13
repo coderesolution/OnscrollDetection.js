@@ -36,6 +36,9 @@
         stuckClass: 'has-stuck'
       }, options.classDefaults);
 
+      // Initialise event handlers
+      this.eventHandlers = {};
+
       // Initialise the class
       this.init();
     }
@@ -78,6 +81,21 @@
     }
 
     // Helper methods
+    ;
+    _proto.on = function on(event, handler) {
+      if (!this.eventHandlers[event]) {
+        this.eventHandlers[event] = [];
+      }
+      this.eventHandlers[event].push(handler);
+    };
+    _proto.emit = function emit(event) {
+      var _arguments = arguments;
+      if (this.eventHandlers[event]) {
+        this.eventHandlers[event].forEach(function (handler) {
+          return handler.apply(void 0, [].slice.call(_arguments, 1));
+        });
+      }
+    }
 
     // Get the trigger element for ScrollTrigger
     ;
@@ -145,12 +163,14 @@
             if (isSticky) {
               element.classList.add(_this2.classDefaults.stickyClass, _this2.classDefaults.stuckClass);
             }
+            _this2.emit('enter', element);
           },
           onLeave: function onLeave() {
             element.classList.remove(_this2.classDefaults.scrollingClass);
             if (isSticky) {
               element.classList.remove(_this2.classDefaults.stickyClass);
             }
+            _this2.emit('leave', element);
           },
           onEnterBack: function onEnterBack() {
             element.classList.add(_this2.classDefaults.scrollingClass);
@@ -400,10 +420,32 @@
       }
     }
 
+    // Fetch a trigger
+    ;
+    _proto.fetch = function fetch(elementOrIndex) {
+      if (typeof elementOrIndex === 'number') {
+        // Treat argument as an index
+        var keys = Array.from(this.triggers.keys());
+        return keys[elementOrIndex];
+      } else {
+        // Assume argument is a DOM element
+        var trigger = null;
+        this.triggers.forEach(function (value, key) {
+          if (value.element === elementOrIndex) {
+            trigger = key;
+          }
+        });
+        return trigger;
+      }
+    }
+
     // Refresh ScrollTrigger instances
     ;
     _proto.refresh = function refresh() {
       ScrollTrigger.refresh();
+
+      // Emit event after refresh is done
+      this.emit('refresh');
     }
 
     // Restart the animations and reinitialize the ScrollTrigger instances
@@ -422,6 +464,9 @@
 
       // Reapply animations and initialize ScrollTrigger
       this.init();
+
+      // Emit event after restart is done
+      this.emit('restart');
     }
 
     // Stop animations and ScrollTriggers
@@ -445,6 +490,9 @@
         });
         this.triggers.clear();
       }
+
+      // Emit event after stop is done
+      this.emit('stop', target);
     }
 
     // Update animation for a specific target with new fromProperties and toProperties

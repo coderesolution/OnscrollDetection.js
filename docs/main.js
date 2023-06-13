@@ -1,11 +1,11 @@
 /* Lib */
-import OnscrollDetection from '../src/index';
+import OnscrollDetection from '../src/index'
 
 /* Demo CSS */
 import './index.css'
 
 /* Register GSAP and plugins */
-gsap.registerPlugin( ScrollTrigger );
+gsap.registerPlugin(ScrollTrigger)
 
 /* Lenis smooth scroll */
 const lenis = new Lenis()
@@ -24,54 +24,52 @@ const onscroll = new OnscrollDetection({
 		scrollingClass: 'custom-scrolling',
 		scrolledClass: 'custom-scrolled',
 		stickyClass: 'custom-sticky',
-		stuckClass: 'custom-stuck'
-	}
-});
+		stuckClass: 'custom-stuck',
+	},
+})
 
 /* Buttons */
-const oButtons = document.querySelectorAll( '.js-button' );
+const oButtons = document.querySelectorAll('.js-button')
 
-oButtons.forEach( oButton => {
+const elementToStop = document.querySelector("#myElement");
+const triggerToStop = onscroll.fetch(elementToStop);
 
-	oButton.addEventListener( 'click', ( e ) => {
-
+oButtons.forEach((oButton) => {
+	oButton.addEventListener('click', (e) => {
 		e.preventDefault()
 
-		switch( oButton.dataset.method ) {
+		switch (oButton.dataset.method) {
 			case 'refresh':
-			onscroll.refresh()
-			break;
+				onscroll.refresh()
+				break
 
 			case 'stop':
-			onscroll.stop(1)
-			break;
+				onscroll.stop(triggerToStop)
+				break
 
 			case 'restart':
-			onscroll.restart()
-			break;
+				onscroll.restart()
+				break
 
 			default:
-			console.log( 'No method' )
-
+				console.log('No method')
 		}
-
 	})
-
-});
+})
 
 /* Event listeners */
-onscroll.on('enter', (element) => {
-	console.log('Entering view:', element );
-});
-onscroll.on('leave', (element) => {
-	console.log('Leaving view:', element );
-});
+// onscroll.on('enter', (element) => {
+// 	console.log('Entering view:', element)
+// })
+// onscroll.on('leave', (element) => {
+// 	console.log('Leaving view:', element)
+// })
 onscroll.on('refresh', () => {
-	console.log('Refreshed');
-});
+	console.log('Refreshed')
+})
 onscroll.on('restart', () => {
-	console.log('Restarted');
-});
+	console.log('Restarted')
+})
 onscroll.on('stop', (target) => {
-	console.log(`Stopped: ${target}`);
-});
+	console.log('Stopped', target)
+})
