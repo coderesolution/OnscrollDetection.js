@@ -371,6 +371,13 @@
       if (this.hasAttributes(element, ['data-onscroll-debug'])) {
         var _this$getOffsetAndDis4 = this.getOffsetAndDistance(element),
           offset = _this$getOffsetAndDis4.offset;
+        var speedMultiplier;
+        var speedViewportPercentage;
+        if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+          var _element$dataset$onsc4 = element.dataset.onscrollSpeed.split(',');
+          speedMultiplier = _element$dataset$onsc4[0];
+          speedViewportPercentage = _element$dataset$onsc4[1];
+        }
         console.group("OnscrollDetection() debug instance (#" + (index + 1) + ")");
         console.log({
           element: element,
@@ -382,7 +389,7 @@
           offsetAfter: this.getDistanceOrSpeed(element),
           delay: this.getScrub(element),
           screen: this.getScreen(element),
-          speed: this.hasAttributes(element, ['data-onscroll-speed']) ? element.dataset.onscrollSpeed + ' calculated at ' + (1 - parseFloat(element.dataset.onscrollSpeed)) * (ScrollTrigger.maxScroll(window) - (this.scrollTrigger ? this.scrollTrigger.start : 0)) : null,
+          speed: this.hasAttributes(element, ['data-onscroll-speed']) ? parseFloat(speedMultiplier * element.clientHeight + speedViewportPercentage / 100 * window.innerHeight) + ' (' + parseFloat(speedMultiplier) + 'x element height + ' + parseFloat(speedViewportPercentage) + '% of the viewport height)' : null,
           direction: this.hasAttributes(element, ['data-onscroll-direction']) ? element.dataset.onscrollDirection : 'y',
           reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
           sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,

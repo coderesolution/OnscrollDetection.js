@@ -8,7 +8,6 @@ A powerful javascript library to create parallax animations based on scroll dete
  - [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
  - [Feature] Create a `data-onscroll-preset` option not to be used in conjunction with start/end. It should automatically adjust the start/end values based on the offset. Note, currently doing this automatically on speed attributes.
 
- - [Test] Test scroll speed combined with x/xy direction
  - [Test] Test compatibility with SmoothScroller and native (alternative to Lenis)
  - [Docs] Add code examples of every attribute, with a description
  - [Docs] Add explanation as to what it is (streamlined animations via DOM) and what it is not (not replacing GSAP / JS animations)
@@ -127,7 +126,7 @@ onscroll.refresh();
 
 #### Stop
 
-Stop animations where they are. Not advised as this may have negative impact on performance.
+This function stops all ongoing animations and removes ScrollTrigger instances. If a specific target is passed, it will only stop the animation and remove the ScrollTrigger for that target.
 
 ```js
 /* Stop all animations */
@@ -140,7 +139,7 @@ onscroll.stop(specificScrollTrigger); // This will remove only the specified Scr
 
 #### Restart
 
-Stop and restart all animations.
+Stop and restart animations.
 
 ```js
 onscroll.restart();
