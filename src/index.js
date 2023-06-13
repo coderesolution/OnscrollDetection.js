@@ -105,6 +105,7 @@ export default class OnscrollDetection {
 	getToProperties(element, index, trigger) {
 		const animateTo = this.getAnimateTo(element)
 		const stickyProperties = this.getStickyProperties(element)
+		const isSticky = this.hasAttributes(element, ['data-onscroll-sticky'])
 
 		return {
 			...animateTo,
@@ -112,7 +113,7 @@ export default class OnscrollDetection {
 			y: this.getY(element),
 			ease: 'none',
 			scrollTrigger: {
-				trigger: this.hasAttributes(element, ['data-onscroll-sticky']) ? element : trigger,
+				trigger: isSticky ? element : trigger,
 				start: this.getStart(element),
 				end: this.getEnd(element),
 				invalidateOnRefresh: true,
@@ -120,6 +121,30 @@ export default class OnscrollDetection {
 				pinSpacing: stickyProperties.pinSpacing,
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
+				onEnter: () => {
+					element.classList.add('is-scrolling', 'has-scrolled')
+					if (isSticky) {
+						element.classList.add('is-sticky', 'has-stuck')
+					}
+				},
+				onLeave: () => {
+					element.classList.remove('is-scrolling')
+					if (isSticky) {
+						element.classList.remove('is-sticky')
+					}
+				},
+				onEnterBack: () => {
+					element.classList.add('is-scrolling')
+					if (isSticky) {
+						element.classList.add('is-sticky')
+					}
+				},
+				onLeaveBack: () => {
+					element.classList.remove('is-scrolling')
+					if (isSticky) {
+						element.classList.remove('is-sticky')
+					}
+				},
 			},
 		}
 	}
@@ -275,7 +300,7 @@ export default class OnscrollDetection {
 				stickyOffset = parseFloat(offsetValue)
 			}
 
-			return ( element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top' ) + '+=' + stickyOffset
+			return (element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top') + '+=' + stickyOffset
 		}
 		return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
 	}
