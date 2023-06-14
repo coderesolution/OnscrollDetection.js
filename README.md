@@ -1,35 +1,35 @@
-<h1 align="center">OnscrollDetection.js</h1>
+# OnscrollDetection.js
 
-A powerful javascript library to create parallax animations based on scroll detection. Powered by GSAP.
+OnscrollDetection.js is a powerful JavaScript library that provides robust features to create parallax animations based on scroll detection. Powered by GSAP, it offers various customizable options for creating dynamic and interactive user experiences.
 
 ## Features
 
--   Bind animation to any trigger element
--   Classes
--	Event callbacks
--   Vertical/horizontal directions with reverse
--   Specific px value, control from and to, modify scroll speed, or automatically calculate parallax based on parent
--   Custom animations (rotate, skew, colours and more)
--   Target specific screen sizes
--   Debugging mode
--   Lightweight before dependencies (~2.19Kb gzipped)
+- Bind animations to any trigger element.
+- Manipulate classes based on scroll events.
+- Trigger callbacks on specific events.
+- Supports both vertical and horizontal directions with the ability to reverse.
+- Control animation through specific px values, from and to attributes, modify scroll speed, or automatically calculate parallax based on parent.
+- Create custom animations such as rotation, skewing, color changes, and more.
+- Target specific screen sizes for adaptive animations.
+- Built-in debugging mode.
+- Lightweight, even with dependencies (~2.19Kb gzipped).
 
 ## Dependencies
 
-The following <u>must</u> be instantiated before:
+Please ensure the following dependencies are installed and properly configured:
 
--   GSAP v3 (https://greensock.com/gsap/)
--   GSAP ScrollTrigger (https://greensock.com/scrolltrigger/)
+- [GSAP v3](https://greensock.com/gsap/)
+- [GSAP ScrollTrigger](https://greensock.com/scrolltrigger/)
 
 ## Quick start
 
 ### Installation
 
-OnscrollDetection.js requires the GSAP library, as well as ScrollTrigger to work. You need to include all of them before OnscrollDetection.js.
+OnscrollDetection.js requires the GSAP library and ScrollTrigger for operation. Make sure to include them before OnscrollDetection.js.
 
 #### Boilerplate
 
-We have already included the file in our [Boilerplate](https://github.com/coderesolution/boilerplate).
+Our [Boilerplate](https://github.com/coderesolution/boilerplate) includes the OnscrollDetection.js file.
 
 #### Use from CDN
 
