@@ -4,8 +4,10 @@ A powerful javascript library to create parallax animations based on scroll dete
 
 ## TO-DO
 
--   [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
+-   [Feature] Add autoStart feature to provide optional load
+-   [Feature] Add progressive callback
 -   [Feature] Create a `data-onscroll-preset` option not to be used in conjunction with start/end. It should automatically adjust the start/end values based on the offset. Note, currently doing this automatically on speed attributes.
+-   [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
 
 -   [Test] Test compatibility with SmoothScroller and native (alternative to Lenis)
 -   [Docs] Add code examples of every attribute, with a description
