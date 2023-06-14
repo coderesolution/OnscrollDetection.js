@@ -146,6 +146,19 @@
       var stickyProperties = this.getStickyProperties(element);
       var isSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
       var customEventName = element.getAttribute('data-onscroll-call');
+
+      // Helper function to dispatch the custom event
+      var dispatchCustomEvent = function dispatchCustomEvent(when, direction) {
+        if (customEventName) {
+          window.dispatchEvent(new CustomEvent(customEventName, {
+            detail: {
+              target: element,
+              direction: direction === 1 ? 'down' : 'up',
+              when: when
+            }
+          }));
+        }
+      };
       return _extends({}, animateTo, {
         x: this.getX(element),
         y: this.getY(element),
@@ -165,16 +178,7 @@
             if (isSticky) {
               element.classList.add(_this2.classDefaults.stickyClass, _this2.classDefaults.stuckClass);
             }
-            if (customEventName) {
-              // Trigger custom event when the element enters the viewport
-              window.dispatchEvent(new CustomEvent(customEventName, {
-                detail: {
-                  target: element,
-                  direction: direction === 1 ? 'down' : 'up',
-                  when: 'onEnter'
-                }
-              }));
-            }
+            dispatchCustomEvent('onEnter', direction);
             _this2.emit('onEnter', element);
           },
           onLeave: function onLeave(_ref2) {
@@ -183,16 +187,7 @@
             if (isSticky) {
               element.classList.remove(_this2.classDefaults.stickyClass);
             }
-            if (customEventName) {
-              // Trigger custom event when the element enters the viewport
-              window.dispatchEvent(new CustomEvent(customEventName, {
-                detail: {
-                  target: element,
-                  direction: direction === 1 ? 'down' : 'up',
-                  when: 'onLeave'
-                }
-              }));
-            }
+            dispatchCustomEvent('onLeave', direction);
             _this2.emit('onLeave', element);
           },
           onEnterBack: function onEnterBack(_ref3) {
@@ -201,16 +196,7 @@
             if (isSticky) {
               element.classList.add(_this2.classDefaults.stickyClass);
             }
-            if (customEventName) {
-              // Trigger custom event when the element enters the viewport
-              window.dispatchEvent(new CustomEvent(customEventName, {
-                detail: {
-                  target: element,
-                  direction: direction === 1 ? 'down' : 'up',
-                  when: 'onEnterBack'
-                }
-              }));
-            }
+            dispatchCustomEvent('onEnterBack', direction);
             _this2.emit('onEnterBack', element);
           },
           onLeaveBack: function onLeaveBack(_ref4) {
@@ -219,16 +205,7 @@
             if (isSticky) {
               element.classList.remove(_this2.classDefaults.stickyClass);
             }
-            if (customEventName) {
-              // Trigger custom event when the element enters the viewport
-              window.dispatchEvent(new CustomEvent(customEventName, {
-                detail: {
-                  target: element,
-                  direction: direction === 1 ? 'down' : 'up',
-                  when: 'onLeaveBack'
-                }
-              }));
-            }
+            dispatchCustomEvent('onLeaveBack', direction);
             _this2.emit('onLeaveBack', element);
           }
         }

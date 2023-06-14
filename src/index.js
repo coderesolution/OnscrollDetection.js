@@ -132,6 +132,19 @@ export default class OnscrollDetection {
 		const isSticky = this.hasAttributes(element, ['data-onscroll-sticky'])
 		const customEventName = element.getAttribute('data-onscroll-call')
 
+		// Helper function to dispatch the custom event
+		const dispatchCustomEvent = (when, direction) => {
+			if (customEventName) {
+				window.dispatchEvent(new CustomEvent(customEventName, {
+					detail: {
+						target: element,
+						direction: direction === 1 ? 'down' : 'up',
+						when
+					}
+				}));
+			}
+		};
+
 		return {
 			...animateTo,
 			x: this.getX(element),
@@ -151,16 +164,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
 					}
-					if (customEventName) {
-						// Trigger custom event when the element enters the viewport
-						window.dispatchEvent(new CustomEvent(customEventName, {
-							detail: {
-								target: element,
-								direction: direction === 1 ? 'down' : 'up',
-								when: 'onEnter'
-							}
-						}));
-					}
+					dispatchCustomEvent('onEnter', direction);
 					this.emit('onEnter', element)
 				},
 				onLeave: ({ direction }) => {
@@ -168,16 +172,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
-					if (customEventName) {
-						// Trigger custom event when the element enters the viewport
-						window.dispatchEvent(new CustomEvent(customEventName, {
-							detail: {
-								target: element,
-								direction: direction === 1 ? 'down' : 'up',
-								when: 'onLeave'
-							}
-						}));
-					}
+					dispatchCustomEvent('onLeave', direction);
 					this.emit('onLeave', element)
 				},
 				onEnterBack: ({ direction }) => {
@@ -185,16 +180,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass)
 					}
-					if (customEventName) {
-						// Trigger custom event when the element enters the viewport
-						window.dispatchEvent(new CustomEvent(customEventName, {
-							detail: {
-								target: element,
-								direction: direction === 1 ? 'down' : 'up',
-								when: 'onEnterBack'
-							}
-						}));
-					}
+					dispatchCustomEvent('onEnterBack', direction);
 					this.emit('onEnterBack', element)
 				},
 				onLeaveBack: ({ direction }) => {
@@ -202,16 +188,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
-					if (customEventName) {
-						// Trigger custom event when the element enters the viewport
-						window.dispatchEvent(new CustomEvent(customEventName, {
-							detail: {
-								target: element,
-								direction: direction === 1 ? 'down' : 'up',
-								when: 'onLeaveBack'
-							}
-						}));
-					}
+					dispatchCustomEvent('onLeaveBack', direction);
 					this.emit('onLeaveBack', element)
 				},
 			},
