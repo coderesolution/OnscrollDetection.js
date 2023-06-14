@@ -58,11 +58,17 @@ oButtons.forEach((oButton) => {
 })
 
 /* Event listeners */
-// onscroll.on('enter', (element) => {
-// 	console.log('Entering view:', element)
+// onscroll.on('onEnter', (element) => {
+// 	console.log('Entering top of view:', element)
 // })
-// onscroll.on('leave', (element) => {
-// 	console.log('Leaving view:', element)
+// onscroll.on('onLeave', (element) => {
+// 	console.log('Leaving bottom of view:', element)
+// })
+// onscroll.on('onEnterBack', (element) => {
+// 	console.log('Entering bottom of view:', element)
+// })
+// onscroll.on('onLeaveBack', (element) => {
+// 	console.log('Leaving top of view:', element)
 // })
 onscroll.on('refresh', () => {
 	console.log('Refreshed')
@@ -73,3 +79,9 @@ onscroll.on('restart', () => {
 onscroll.on('stop', (target) => {
 	console.log('Stopped', target)
 })
+
+/* Custom functions */
+window.addEventListener('scrollEventDemo', (e) => {
+	const { target, direction, when } = e.detail;
+	console.log(`target: ${target}`, `direction: ${direction}`, `when: ${when}`);
+});

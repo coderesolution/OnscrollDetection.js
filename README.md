@@ -4,7 +4,6 @@ A powerful javascript library to create parallax animations based on scroll dete
 
 ## TO-DO
 
--   [Feature] Custom Events: Bind custom events that are triggered at various points in the animation process.
 -   [Feature] Callback Functions: Call custom functions on specific triggers, for instance when the animation starts, completes, or when it loops. Pass data
 -   [Feature] JS Apply: Instantiate specific elements via JS by passing objects and arguments, like inview.apply(parent,{})
 -   [Feature] Create a `data-onscroll-preset` option not to be used in conjunction with start/end. It should automatically adjust the start/end values based on the offset. Note, currently doing this automatically on speed attributes.
@@ -187,21 +186,22 @@ const onscroll = new OnscrollDetection({
 })
 ```
 
-### Methods
+### Events
 
-#### Element enters viewport
+#### Element enter/leave the viewport
 
 ```js
-onscroll.on('enter', (element) => {
-	console.log('Entering view:', element)
+onscroll.on('onEnter', (element) => {
+	console.log('Entering top of view:', element)
 })
-```
-
-#### Element leaves viewport
-
-```js
-onscroll.on('leave', (element) => {
-	console.log('Leaving view:', element)
+onscroll.on('onLeave', (element) => {
+	console.log('Leaving bottom of view:', element)
+})
+onscroll.on('onEnterBack', (element) => {
+	console.log('Entering bottom of view:', element)
+})
+onscroll.on('onLeaveBack', (element) => {
+	console.log('Leaving top of view:', element)
 })
 ```
 
@@ -227,6 +227,21 @@ onscroll.on('stop', (target) => {
 onscroll.on('restart', () => {
 	console.log('Restarted')
 })
+```
+
+### Custom Callbacks
+
+Fire custom events when elements enter or leave the viewport.
+
+```html
+<div data-onscroll data-onscroll-call="scrollEvent">Trigger</div>
+```
+
+```js
+window.addEventListener('scrollEvent', (e) => {
+	const { target, direction, when } = e.detail;
+	console.log(`target: ${target}`, `direction: ${direction}`, `when: ${when}`);
+});
 ```
 
 ## Examples of use

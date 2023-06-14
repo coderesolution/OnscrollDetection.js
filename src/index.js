@@ -130,6 +130,7 @@ export default class OnscrollDetection {
 		const animateTo = this.getAnimateTo(element)
 		const stickyProperties = this.getStickyProperties(element)
 		const isSticky = this.hasAttributes(element, ['data-onscroll-sticky'])
+		const customEventName = element.getAttribute('data-onscroll-call')
 
 		return {
 			...animateTo,
@@ -145,31 +146,73 @@ export default class OnscrollDetection {
 				pinSpacing: stickyProperties.pinSpacing,
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
-				onEnter: () => {
+				onEnter: ({ direction }) => {
 					element.classList.add(this.classDefaults.scrollingClass, this.classDefaults.scrolledClass)
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
 					}
-					this.emit('enter', element)
+					if (customEventName) {
+						// Trigger custom event when the element enters the viewport
+						window.dispatchEvent(new CustomEvent(customEventName, {
+							detail: {
+								target: element,
+								direction: direction === 1 ? 'down' : 'up',
+								when: 'onEnter'
+							}
+						}));
+					}
+					this.emit('onEnter', element)
 				},
-				onLeave: () => {
+				onLeave: ({ direction }) => {
 					element.classList.remove(this.classDefaults.scrollingClass)
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
-					this.emit('leave', element)
+					if (customEventName) {
+						// Trigger custom event when the element enters the viewport
+						window.dispatchEvent(new CustomEvent(customEventName, {
+							detail: {
+								target: element,
+								direction: direction === 1 ? 'down' : 'up',
+								when: 'onLeave'
+							}
+						}));
+					}
+					this.emit('onLeave', element)
 				},
-				onEnterBack: () => {
+				onEnterBack: ({ direction }) => {
 					element.classList.add(this.classDefaults.scrollingClass)
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass)
 					}
+					if (customEventName) {
+						// Trigger custom event when the element enters the viewport
+						window.dispatchEvent(new CustomEvent(customEventName, {
+							detail: {
+								target: element,
+								direction: direction === 1 ? 'down' : 'up',
+								when: 'onEnterBack'
+							}
+						}));
+					}
+					this.emit('onEnterBack', element)
 				},
-				onLeaveBack: () => {
+				onLeaveBack: ({ direction }) => {
 					element.classList.remove(this.classDefaults.scrollingClass)
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
+					if (customEventName) {
+						// Trigger custom event when the element enters the viewport
+						window.dispatchEvent(new CustomEvent(customEventName, {
+							detail: {
+								target: element,
+								direction: direction === 1 ? 'down' : 'up',
+								when: 'onLeaveBack'
+							}
+						}));
+					}
+					this.emit('onLeaveBack', element)
 				},
 			},
 		}
@@ -402,17 +445,17 @@ export default class OnscrollDetection {
 	fetch(elementOrIndex) {
 		if (typeof elementOrIndex === 'number') {
 			// Treat argument as an index
-			const keys = Array.from(this.triggers.keys());
-			return keys[elementOrIndex];
+			const keys = Array.from(this.triggers.keys())
+			return keys[elementOrIndex]
 		} else {
 			// Assume argument is a DOM element
-			let trigger = null;
+			let trigger = null
 			this.triggers.forEach((value, key) => {
 				if (value.element === elementOrIndex) {
-					trigger = key;
+					trigger = key
 				}
-			});
-			return trigger;
+			})
+			return trigger
 		}
 	}
 
