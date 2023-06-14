@@ -135,15 +135,17 @@ export default class OnscrollDetection {
 		// Helper function to dispatch the custom event
 		const dispatchCustomEvent = (when, direction) => {
 			if (customEventName) {
-				window.dispatchEvent(new CustomEvent(customEventName, {
-					detail: {
-						target: element,
-						direction: direction === 1 ? 'down' : 'up',
-						when
-					}
-				}));
+				window.dispatchEvent(
+					new CustomEvent(customEventName, {
+						detail: {
+							target: element,
+							direction: direction === 1 ? 'down' : 'up',
+							when,
+						},
+					})
+				)
 			}
-		};
+		}
 
 		return {
 			...animateTo,
@@ -164,7 +166,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
 					}
-					dispatchCustomEvent('onEnter', direction);
+					dispatchCustomEvent('onEnter', direction)
 					this.emit('onEnter', element)
 				},
 				onLeave: ({ direction }) => {
@@ -172,7 +174,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
-					dispatchCustomEvent('onLeave', direction);
+					dispatchCustomEvent('onLeave', direction)
 					this.emit('onLeave', element)
 				},
 				onEnterBack: ({ direction }) => {
@@ -180,7 +182,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.add(this.classDefaults.stickyClass)
 					}
-					dispatchCustomEvent('onEnterBack', direction);
+					dispatchCustomEvent('onEnterBack', direction)
 					this.emit('onEnterBack', element)
 				},
 				onLeaveBack: ({ direction }) => {
@@ -188,7 +190,7 @@ export default class OnscrollDetection {
 					if (isSticky) {
 						element.classList.remove(this.classDefaults.stickyClass)
 					}
-					dispatchCustomEvent('onLeaveBack', direction);
+					dispatchCustomEvent('onLeaveBack', direction)
 					this.emit('onLeaveBack', element)
 				},
 			},
@@ -413,6 +415,9 @@ export default class OnscrollDetection {
 				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
 				animateFrom: this.getAnimateFrom(element),
 				animateTo: this.getAnimateTo(element),
+				customEvent: this.hasAttributes(element, ['data-onscroll-call'])
+					? element.getAttribute('data-onscroll-call')
+					: null,
 			})
 			console.groupEnd()
 		}

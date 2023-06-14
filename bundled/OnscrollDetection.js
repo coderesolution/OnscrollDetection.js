@@ -438,7 +438,8 @@
           reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
           sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
           animateFrom: this.getAnimateFrom(element),
-          animateTo: this.getAnimateTo(element)
+          animateTo: this.getAnimateTo(element),
+          customEvent: this.hasAttributes(element, ['data-onscroll-call']) ? element.getAttribute('data-onscroll-call') : null
         });
         console.groupEnd();
       }
