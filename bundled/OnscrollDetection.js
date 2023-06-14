@@ -145,6 +145,7 @@
       var animateTo = this.getAnimateTo(element);
       var stickyProperties = this.getStickyProperties(element);
       var isSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
+      var customEventName = element.getAttribute('data-onscroll-call');
       return _extends({}, animateTo, {
         x: this.getX(element),
         y: this.getY(element),
@@ -158,31 +159,77 @@
           pinSpacing: stickyProperties.pinSpacing,
           scrub: this.getScrub(element),
           markers: this.hasAttributes(element, ['data-onscroll-debug']),
-          onEnter: function onEnter() {
+          onEnter: function onEnter(_ref) {
+            var direction = _ref.direction;
             element.classList.add(_this2.classDefaults.scrollingClass, _this2.classDefaults.scrolledClass);
             if (isSticky) {
               element.classList.add(_this2.classDefaults.stickyClass, _this2.classDefaults.stuckClass);
             }
-            _this2.emit('enter', element);
+            if (customEventName) {
+              // Trigger custom event when the element enters the viewport
+              window.dispatchEvent(new CustomEvent(customEventName, {
+                detail: {
+                  target: element,
+                  direction: direction === 1 ? 'down' : 'up',
+                  when: 'onEnter'
+                }
+              }));
+            }
+            _this2.emit('onEnter', element);
           },
-          onLeave: function onLeave() {
+          onLeave: function onLeave(_ref2) {
+            var direction = _ref2.direction;
             element.classList.remove(_this2.classDefaults.scrollingClass);
             if (isSticky) {
               element.classList.remove(_this2.classDefaults.stickyClass);
             }
-            _this2.emit('leave', element);
+            if (customEventName) {
+              // Trigger custom event when the element enters the viewport
+              window.dispatchEvent(new CustomEvent(customEventName, {
+                detail: {
+                  target: element,
+                  direction: direction === 1 ? 'down' : 'up',
+                  when: 'onLeave'
+                }
+              }));
+            }
+            _this2.emit('onLeave', element);
           },
-          onEnterBack: function onEnterBack() {
+          onEnterBack: function onEnterBack(_ref3) {
+            var direction = _ref3.direction;
             element.classList.add(_this2.classDefaults.scrollingClass);
             if (isSticky) {
               element.classList.add(_this2.classDefaults.stickyClass);
             }
+            if (customEventName) {
+              // Trigger custom event when the element enters the viewport
+              window.dispatchEvent(new CustomEvent(customEventName, {
+                detail: {
+                  target: element,
+                  direction: direction === 1 ? 'down' : 'up',
+                  when: 'onEnterBack'
+                }
+              }));
+            }
+            _this2.emit('onEnterBack', element);
           },
-          onLeaveBack: function onLeaveBack() {
+          onLeaveBack: function onLeaveBack(_ref4) {
+            var direction = _ref4.direction;
             element.classList.remove(_this2.classDefaults.scrollingClass);
             if (isSticky) {
               element.classList.remove(_this2.classDefaults.stickyClass);
             }
+            if (customEventName) {
+              // Trigger custom event when the element enters the viewport
+              window.dispatchEvent(new CustomEvent(customEventName, {
+                detail: {
+                  target: element,
+                  direction: direction === 1 ? 'down' : 'up',
+                  when: 'onLeaveBack'
+                }
+              }));
+            }
+            _this2.emit('onLeaveBack', element);
           }
         }
       });
@@ -484,8 +531,8 @@
         }
       } else {
         // Stop all animations and clear the ScrollTrigger instances
-        this.triggers.forEach(function (_ref) {
-          var gsapAnimation = _ref.gsapAnimation;
+        this.triggers.forEach(function (_ref5) {
+          var gsapAnimation = _ref5.gsapAnimation;
           gsapAnimation.kill();
         });
         this.triggers.clear();
