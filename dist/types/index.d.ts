@@ -3,9 +3,14 @@ export default class OnscrollDetection {
     elements: any;
     screen: any;
     triggers: Map<any, any>;
-    classDefaults: any;
+    scrollingClass: any;
+    scrolledClass: any;
+    stickyClass: any;
+    stuckClass: any;
     eventHandlers: {};
+    autoStart: any;
     init(): void;
+    start(): void;
     on(event: any, handler: any): void;
     emit(event: any, ...args: any[]): void;
     getTrigger(element: any): any;

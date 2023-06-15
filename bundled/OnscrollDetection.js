@@ -29,18 +29,21 @@
       this.triggers = new Map();
 
       // Set class names to defaults or provided options
-      this.classDefaults = _extends({
-        scrollingClass: 'is-scrolling',
-        scrolledClass: 'has-scrolled',
-        stickyClass: 'is-sticky',
-        stuckClass: 'has-stuck'
-      }, options.classDefaults);
+      this.scrollingClass = options.scrollingClass || 'is-scrolling';
+      this.scrolledClass = options.scrolledClass || 'has-scrolled';
+      this.stickyClass = options.stickyClass || 'is-sticky';
+      this.stuckClass = options.stuckClass || 'has-stuck';
 
       // Initialise event handlers
       this.eventHandlers = {};
 
+      // Set autoStart to true by default, or use provided value
+      this.autoStart = options.autoStart !== undefined ? options.autoStart : true;
+
       // Initialise the class
-      this.init();
+      if (this.autoStart) {
+        this.init();
+      }
     }
 
     // Initialisation function
@@ -78,6 +81,13 @@
         // Enable debug mode for logging
         _this.debugMode(element, index);
       });
+    }
+
+    // Function to load and initialize the class
+    ;
+    _proto.start = function start() {
+      // Initialize the class
+      this.init();
     }
 
     // Helper methods
@@ -174,36 +184,36 @@
           markers: this.hasAttributes(element, ['data-onscroll-debug']),
           onEnter: function onEnter(_ref) {
             var direction = _ref.direction;
-            element.classList.add(_this2.classDefaults.scrollingClass, _this2.classDefaults.scrolledClass);
+            element.classList.add(_this2.scrollingClass, _this2.scrolledClass);
             if (isSticky) {
-              element.classList.add(_this2.classDefaults.stickyClass, _this2.classDefaults.stuckClass);
+              element.classList.add(_this2.stickyClass, _this2.stuckClass);
             }
             dispatchCustomEvent('onEnter', direction);
             _this2.emit('onEnter', element);
           },
           onLeave: function onLeave(_ref2) {
             var direction = _ref2.direction;
-            element.classList.remove(_this2.classDefaults.scrollingClass);
+            element.classList.remove(_this2.scrollingClass);
             if (isSticky) {
-              element.classList.remove(_this2.classDefaults.stickyClass);
+              element.classList.remove(_this2.stickyClass);
             }
             dispatchCustomEvent('onLeave', direction);
             _this2.emit('onLeave', element);
           },
           onEnterBack: function onEnterBack(_ref3) {
             var direction = _ref3.direction;
-            element.classList.add(_this2.classDefaults.scrollingClass);
+            element.classList.add(_this2.scrollingClass);
             if (isSticky) {
-              element.classList.add(_this2.classDefaults.stickyClass);
+              element.classList.add(_this2.stickyClass);
             }
             dispatchCustomEvent('onEnterBack', direction);
             _this2.emit('onEnterBack', element);
           },
           onLeaveBack: function onLeaveBack(_ref4) {
             var direction = _ref4.direction;
-            element.classList.remove(_this2.classDefaults.scrollingClass);
+            element.classList.remove(_this2.scrollingClass);
             if (isSticky) {
-              element.classList.remove(_this2.classDefaults.stickyClass);
+              element.classList.remove(_this2.stickyClass);
             }
             dispatchCustomEvent('onLeaveBack', direction);
             _this2.emit('onLeaveBack', element);
