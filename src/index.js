@@ -242,11 +242,6 @@ export default class OnscrollDetection {
 		return element.dataset.onscrollDirection ? element.dataset.onscrollDirection : 'y'
 	}
 
-	// Get the preset value
-	getPreset(element) {
-		return element.hasAttribute('data-onscroll-preset') ? true : false
-	}
-
 	// Get the 'x' value for ScrollTrigger animation
 	getX(element) {
 		if (element.hasAttribute('data-onscroll-sticky')) {
@@ -373,11 +368,9 @@ export default class OnscrollDetection {
 
 			return (element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top') + '+=' + stickyOffset
 		} else if (
-			element.hasAttribute('data-onscroll-preset') &&
-			element.hasAttribute('data-onscroll-offset') &&
+			this.hasAttributes(element, ['data-onscroll-preset', 'data-onscroll-offset']) &&
 			this.getDirection(element) !== 'x' &&
-			!element.hasAttribute('data-onscroll-end') &&
-			!element.hasAttribute('data-onscroll-sticky')
+			!this.hasAttributes(element, ['data-onscroll-start', 'data-onscroll-sticky'])
 		) {
 			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
 			let positionElement = parseFloat(offsetValue) < 0 ? 'top+=' + offsetValue : 'top+=0'
@@ -417,11 +410,9 @@ export default class OnscrollDetection {
 
 			return `bottom${scrollDistance >= 0 ? '+=' : '-='}${Math.abs(scrollDistance)} top`
 		} else if (
-			element.hasAttribute('data-onscroll-preset') &&
-			element.hasAttribute('data-onscroll-offset') &&
+			this.hasAttributes(element, ['data-onscroll-preset', 'data-onscroll-offset']) &&
 			this.getDirection(element) !== 'x' &&
-			!element.hasAttribute('data-onscroll-end') &&
-			!element.hasAttribute('data-onscroll-sticky')
+			!this.hasAttributes(element, ['data-onscroll-end', 'data-onscroll-sticky'])
 		) {
 			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
 			let positionElement = 'bottom+=' + distanceValue
@@ -470,7 +461,7 @@ export default class OnscrollDetection {
 				direction: this.hasAttributes(element, ['data-onscroll-direction'])
 					? element.dataset.onscrollDirection
 					: 'y',
-				preset: this.getPreset(element),
+				preset: this.hasAttributes(element, ['data-onscroll-preset']) ? true : false,
 				reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
 				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
 				animateFrom: this.getAnimateFrom(element),
