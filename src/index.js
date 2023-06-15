@@ -117,8 +117,6 @@ export default class OnscrollDetection {
 		return {
 			...animateFrom,
 			bottom: this.hasAttributes(element, ['data-onscroll-auto', 'data-onscroll-reverse']) ? 'auto' : null,
-			startAt: { y: 200 },
-			immediateRender: true,
 			top:
 				this.hasAttributes(element, ['data-onscroll-auto']) &&
 				!this.hasAttributes(element, ['data-onscroll-reverse'])
@@ -241,7 +239,7 @@ export default class OnscrollDetection {
 
 	// Get the scroll direction
 	getDirection(element) {
-		return element.dataset.onscrollDirection
+		return element.dataset.onscrollDirection ? element.dataset.onscrollDirection : 'y'
 	}
 
 	// Get the preset value
@@ -288,6 +286,9 @@ export default class OnscrollDetection {
 		const triggerElement = this.getTrigger(element)
 		const triggerHeight = triggerElement.offsetHeight
 
+		// Check if the element has the data-onscroll-reverse attribute
+		let reverse = element.hasAttribute('data-onscroll-reverse') ? -1 : 1
+
 		if (element.hasAttribute('data-onscroll-offset')) {
 			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
 
@@ -306,6 +307,10 @@ export default class OnscrollDetection {
 			} else {
 				distance = parseFloat(distanceValue)
 			}
+
+			// Apply reverse
+			offset *= reverse
+			distance *= reverse
 		}
 
 		return { offset, distance }
@@ -370,13 +375,22 @@ export default class OnscrollDetection {
 		} else if (
 			element.hasAttribute('data-onscroll-preset') &&
 			element.hasAttribute('data-onscroll-offset') &&
+			this.getDirection(element) !== 'x' &&
 			!element.hasAttribute('data-onscroll-end') &&
 			!element.hasAttribute('data-onscroll-sticky')
 		) {
 			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
-			let positionElement = 'top+=' + offsetValue
+			let positionElement = parseFloat(offsetValue) < 0 ? 'top+=' + offsetValue : 'top+=0'
 			let positionMarker = 'bottom'
 
+			console.log(
+				this.getDirection(element) +
+					'start preset with ' +
+					parseFloat(offsetValue) +
+					' offset and ' +
+					parseFloat(distanceValue) +
+					' distance'
+			)
 			return positionElement + ' ' + positionMarker
 		} else {
 			return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
@@ -404,6 +418,8 @@ export default class OnscrollDetection {
 			return `bottom${scrollDistance >= 0 ? '+=' : '-='}${Math.abs(scrollDistance)} top`
 		} else if (
 			element.hasAttribute('data-onscroll-preset') &&
+			element.hasAttribute('data-onscroll-offset') &&
+			this.getDirection(element) !== 'x' &&
 			!element.hasAttribute('data-onscroll-end') &&
 			!element.hasAttribute('data-onscroll-sticky')
 		) {
@@ -411,6 +427,9 @@ export default class OnscrollDetection {
 			let positionElement = 'bottom+=' + distanceValue
 			let positionMarker = 'top'
 
+			console.log(
+				'end preset with ' + parseFloat(offsetValue) + ' offset and ' + parseFloat(distanceValue) + ' distance'
+			)
 			return positionElement + ' ' + positionMarker
 		} else {
 			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
@@ -451,6 +470,7 @@ export default class OnscrollDetection {
 				direction: this.hasAttributes(element, ['data-onscroll-direction'])
 					? element.dataset.onscrollDirection
 					: 'y',
+				preset: this.getPreset(element),
 				reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
 				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
 				animateFrom: this.getAnimateFrom(element),
@@ -529,23 +549,23 @@ export default class OnscrollDetection {
 	}
 
 	// Update animation for a specific target with new fromProperties and toProperties
-// 	update(target, fromProperties, toProperties) {
-// 		const animationData = this.triggers.get(target)
-//
-// 		if (animationData) {
-// 			// Stop the existing animation
-// 			animationData.gsapAnimation.kill()
-//
-// 			// Reinitialize the animation with updated properties
-// 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
-// 			this.triggers.set(gsapAnimation.scrollTrigger, {
-// 				...animationData,
-// 				fromProperties,
-// 				toProperties,
-// 				gsapAnimation,
-// 			})
-// 		}
-// 	}
+	// 	update(target, fromProperties, toProperties) {
+	// 		const animationData = this.triggers.get(target)
+	//
+	// 		if (animationData) {
+	// 			// Stop the existing animation
+	// 			animationData.gsapAnimation.kill()
+	//
+	// 			// Reinitialize the animation with updated properties
+	// 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
+	// 			this.triggers.set(gsapAnimation.scrollTrigger, {
+	// 				...animationData,
+	// 				fromProperties,
+	// 				toProperties,
+	// 				gsapAnimation,
+	// 			})
+	// 		}
+	// 	}
 
 	// Destroy the OnscrollDetection instance
 	destroy() {
