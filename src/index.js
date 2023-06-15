@@ -6,19 +6,21 @@ export default class OnscrollDetection {
 		this.triggers = new Map()
 
 		// Set class names to defaults or provided options
-		this.classDefaults = {
-			scrollingClass: 'is-scrolling',
-			scrolledClass: 'has-scrolled',
-			stickyClass: 'is-sticky',
-			stuckClass: 'has-stuck',
-			...options.classDefaults,
-		}
+		this.scrollingClass = options.scrollingClass || 'is-scrolling'
+		this.scrolledClass = options.scrolledClass || 'has-scrolled'
+		this.stickyClass = options.stickyClass || 'is-sticky'
+		this.stuckClass = options.stuckClass || 'has-stuck'
 
 		// Initialise event handlers
 		this.eventHandlers = {}
 
+		// Set autoStart to true by default, or use provided value
+		this.autoStart = options.autoStart !== undefined ? options.autoStart : true
+
 		// Initialise the class
-		this.init()
+		if (this.autoStart) {
+			this.init()
+		}
 	}
 
 	// Initialisation function
@@ -55,6 +57,12 @@ export default class OnscrollDetection {
 			// Enable debug mode for logging
 			this.debugMode(element, index)
 		})
+	}
+
+	// Function to load and initialize the class
+	start() {
+		// Initialize the class
+		this.init()
 	}
 
 	// Helper methods
@@ -162,33 +170,33 @@ export default class OnscrollDetection {
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
 				onEnter: ({ direction }) => {
-					element.classList.add(this.classDefaults.scrollingClass, this.classDefaults.scrolledClass)
+					element.classList.add(this.scrollingClass, this.scrolledClass)
 					if (isSticky) {
-						element.classList.add(this.classDefaults.stickyClass, this.classDefaults.stuckClass)
+						element.classList.add(this.stickyClass, this.stuckClass)
 					}
 					dispatchCustomEvent('onEnter', direction)
 					this.emit('onEnter', element)
 				},
 				onLeave: ({ direction }) => {
-					element.classList.remove(this.classDefaults.scrollingClass)
+					element.classList.remove(this.scrollingClass)
 					if (isSticky) {
-						element.classList.remove(this.classDefaults.stickyClass)
+						element.classList.remove(this.stickyClass)
 					}
 					dispatchCustomEvent('onLeave', direction)
 					this.emit('onLeave', element)
 				},
 				onEnterBack: ({ direction }) => {
-					element.classList.add(this.classDefaults.scrollingClass)
+					element.classList.add(this.scrollingClass)
 					if (isSticky) {
-						element.classList.add(this.classDefaults.stickyClass)
+						element.classList.add(this.stickyClass)
 					}
 					dispatchCustomEvent('onEnterBack', direction)
 					this.emit('onEnterBack', element)
 				},
 				onLeaveBack: ({ direction }) => {
-					element.classList.remove(this.classDefaults.scrollingClass)
+					element.classList.remove(this.scrollingClass)
 					if (isSticky) {
-						element.classList.remove(this.classDefaults.stickyClass)
+						element.classList.remove(this.stickyClass)
 					}
 					dispatchCustomEvent('onLeaveBack', direction)
 					this.emit('onLeaveBack', element)
