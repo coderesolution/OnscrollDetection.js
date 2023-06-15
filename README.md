@@ -191,11 +191,13 @@ onscroll.restart()
 | `is-sticky`    | Temporarily assigned to sticky element set by `[data-onscroll-sticky]` when they are in view.       |
 | `has-stuck`    | Permanently assigned to sticky element set by `[data-onscroll-sticky]` when they have been in view. |
 
-Note the above are assuming that the classes have not been changed from the default.
+The application remains the same even if the classes have been changed from their default setting.
 
 ### Events
 
 #### Element enter/leave the viewport
+
+Detect when a animation (re)fires from a particular direction.
 
 ```js
 onscroll.on('onEnter', (element) => {
@@ -214,6 +216,8 @@ onscroll.on('onLeaveBack', (element) => {
 
 #### Refresh
 
+Detect when the `onscroll.refresh()` method is fired.
+
 ```js
 onscroll.on('refresh', () => {
 	console.log('Refreshed')
@@ -222,6 +226,8 @@ onscroll.on('refresh', () => {
 
 #### Stop
 
+Detect when the `onscroll.stop()` method is fired.
+
 ```js
 onscroll.on('stop', (target) => {
 	console.log('Stopped', target)
@@ -229,6 +235,8 @@ onscroll.on('stop', (target) => {
 ```
 
 #### Restart
+
+Detect when the `onscroll.restart()` method is fired.
 
 ```js
 onscroll.on('restart', () => {
