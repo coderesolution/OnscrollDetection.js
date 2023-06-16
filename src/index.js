@@ -281,9 +281,6 @@ export default class OnscrollDetection {
 		const triggerElement = this.getTrigger(element)
 		const triggerHeight = triggerElement.offsetHeight
 
-		// Check if the element has the data-onscroll-reverse attribute
-		let reverse = element.hasAttribute('data-onscroll-reverse') ? -1 : 1
-
 		if (element.hasAttribute('data-onscroll-offset')) {
 			const [offsetValue, distanceValue] = element.dataset.onscrollOffset.split(',')
 
@@ -302,10 +299,6 @@ export default class OnscrollDetection {
 			} else {
 				distance = parseFloat(distanceValue)
 			}
-
-			// Apply reverse
-			offset *= reverse
-			distance *= reverse
 		}
 
 		return { offset, distance }
@@ -341,9 +334,9 @@ export default class OnscrollDetection {
 		} else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
 			const elementHeight = element.offsetHeight
 			const scrollDistance = scrollSpeed * elementHeight + additionalDistance
-			return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance
+			return scrollDistance
 		} else if (distance !== null) {
-			return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance
+			return distance
 		}
 	}
 
@@ -462,7 +455,7 @@ export default class OnscrollDetection {
 					? element.dataset.onscrollDirection
 					: 'y',
 				preset: this.hasAttributes(element, ['data-onscroll-preset']) ? true : false,
-				reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
+				reverse: this.hasAttributes(element, ['data-onscroll-reverse']) ? true : false,
 				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
 				animateFrom: this.getAnimateFrom(element),
 				animateTo: this.getAnimateTo(element),
@@ -470,6 +463,24 @@ export default class OnscrollDetection {
 					? element.getAttribute('data-onscroll-call')
 					: null,
 			})
+			if (
+				this.hasAttributes(element, ['data-onscroll-preset']) &&
+				(this.hasAttributes(element, ['data-onscroll-start']) ||
+					this.hasAttributes(element, ['data-onscroll-end']))
+			) {
+				console.warn('`preset` should not be used in conjunction with `start` or `end` settings')
+			}
+			if (
+				this.hasAttributes(element, ['data-onscroll-reverse']) &&
+				(!this.hasAttributes(element, ['data-onscroll-auto']) ||
+					this.hasAttributes(element, ['data-onscroll-offset']) ||
+					this.hasAttributes(element, ['data-onscroll-sticky']) ||
+					this.hasAttributes(element, ['data-onscroll-speed']))
+			) {
+				console.warn(
+					'`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'
+				)
+			}
 			console.groupEnd()
 		}
 	}
