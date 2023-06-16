@@ -63,6 +63,10 @@
 
         // Get the animation properties for 'from' state
         var fromProperties = _this.getFromProperties(element, index);
+        fromProperties.startAt = {
+          backgroundColor: 'red'
+        };
+        fromProperties.immediateRender = true;
 
         // Get the animation properties for 'to' state
         var toProperties = _this.getToProperties(element, index, trigger);
@@ -267,7 +271,7 @@
     // Get the scroll direction
     ;
     _proto.getDirection = function getDirection(element) {
-      return element.dataset.onscrollDirection;
+      return element.dataset.onscrollDirection ? element.dataset.onscrollDirection : 'y';
     }
 
     // Get the 'x' value for ScrollTrigger animation
@@ -366,9 +370,9 @@
       } else if (this.hasAttributes(element, ['data-onscroll-speed'])) {
         var elementHeight = element.offsetHeight;
         var scrollDistance = scrollSpeed * elementHeight + additionalDistance;
-        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -scrollDistance : scrollDistance;
+        return scrollDistance;
       } else if (distance !== null) {
-        return this.hasAttributes(element, ['data-onscroll-reverse']) ? -distance : distance;
+        return distance;
       }
     }
 
@@ -393,8 +397,15 @@
           stickyOffset = parseFloat(offsetValue);
         }
         return (element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top top') + '+=' + stickyOffset;
+      } else if (this.hasAttributes(element, ['data-onscroll-preset', 'data-onscroll-offset']) && this.getDirection(element) !== 'x' && !this.hasAttributes(element, ['data-onscroll-start', 'data-onscroll-sticky'])) {
+        var _element$dataset$onsc3 = element.dataset.onscrollOffset.split(','),
+          _offsetValue = _element$dataset$onsc3[0];
+        var positionElement = parseFloat(_offsetValue) < 0 ? 'top+=' + _offsetValue : 'top+=0';
+        var positionMarker = 'bottom';
+        return positionElement + ' ' + positionMarker;
+      } else {
+        return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
       }
-      return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom';
     }
 
     // Get the end value for ScrollTrigger animation
@@ -404,8 +415,8 @@
         var trigger = this.getTrigger(element);
         var stickyOffset = 0;
         if (element.hasAttribute('data-onscroll-offset')) {
-          var _element$dataset$onsc3 = element.dataset.onscrollOffset.split(','),
-            distanceValue = _element$dataset$onsc3[1];
+          var _element$dataset$onsc4 = element.dataset.onscrollOffset.split(','),
+            distanceValue = _element$dataset$onsc4[1];
           stickyOffset = parseFloat(distanceValue);
         }
         var stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset;
@@ -414,6 +425,12 @@
         var scrollDistance = this.getDistanceOrSpeed(element);
         this.getOffsetAndDistance(element);
         return "bottom" + (scrollDistance >= 0 ? '+=' : '-=') + Math.abs(scrollDistance) + " top";
+      } else if (this.hasAttributes(element, ['data-onscroll-preset', 'data-onscroll-offset']) && this.getDirection(element) !== 'x' && !this.hasAttributes(element, ['data-onscroll-end', 'data-onscroll-sticky'])) {
+        var _element$dataset$onsc5 = element.dataset.onscrollOffset.split(','),
+          _distanceValue2 = _element$dataset$onsc5[1];
+        var positionElement = 'bottom+=' + _distanceValue2;
+        var positionMarker = 'top';
+        return positionElement + ' ' + positionMarker;
       } else {
         return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top';
       }
@@ -422,37 +439,64 @@
     // Enable debug mode for logging
     ;
     _proto.debugMode = function debugMode(element, index) {
-      if (this.hasAttributes(element, ['data-onscroll-debug'])) {
-        var _this$getOffsetAndDis4 = this.getOffsetAndDistance(element),
-          offset = _this$getOffsetAndDis4.offset;
-        var speedMultiplier;
-        var speedViewportPercentage;
-        if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-          var _element$dataset$onsc4 = element.dataset.onscrollSpeed.split(',');
-          speedMultiplier = _element$dataset$onsc4[0];
-          speedViewportPercentage = _element$dataset$onsc4[1];
-        }
-        console.group("OnscrollDetection() debug instance (#" + (index + 1) + ")");
-        console.log({
-          element: element,
-          trigger: this.getTrigger(element),
-          triggerStart: this.getStart(element),
-          triggerEnd: this.getEnd(element),
-          auto: this.hasAttributes(element, ['data-onscroll-auto']),
-          offsetBefore: offset,
-          offsetAfter: this.getDistanceOrSpeed(element),
-          delay: this.getScrub(element),
-          screen: this.getScreen(element),
-          speed: this.hasAttributes(element, ['data-onscroll-speed']) ? parseFloat(speedMultiplier * element.clientHeight + speedViewportPercentage / 100 * window.innerHeight) + ' (' + parseFloat(speedMultiplier) + 'x element height + ' + parseFloat(speedViewportPercentage) + '% of the viewport height)' : null,
-          direction: this.hasAttributes(element, ['data-onscroll-direction']) ? element.dataset.onscrollDirection : 'y',
-          reverse: this.hasAttributes(element, ['data-onscroll-reverse']),
-          sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
-          animateFrom: this.getAnimateFrom(element),
-          animateTo: this.getAnimateTo(element),
-          customEvent: this.hasAttributes(element, ['data-onscroll-call']) ? element.getAttribute('data-onscroll-call') : null
-        });
-        console.groupEnd();
+      if (!this.hasAttributes(element, ['data-onscroll-debug'])) return;
+      var _this$getOffsetAndDis4 = this.getOffsetAndDistance(element),
+        offset = _this$getOffsetAndDis4.offset;
+      var speedMultiplier;
+      var speedViewportPercentage;
+      if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+        var _element$dataset$onsc6 = element.dataset.onscrollSpeed.split(',');
+        speedMultiplier = _element$dataset$onsc6[0];
+        speedViewportPercentage = _element$dataset$onsc6[1];
       }
+      var attrs = element.dataset;
+      var hasSpeed = this.hasAttributes(element, ['data-onscroll-speed']);
+      var hasPreset = this.hasAttributes(element, ['data-onscroll-preset']);
+      var hasSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
+      var hasReverse = this.hasAttributes(element, ['data-onscroll-reverse']);
+      console.group("OnscrollDetection() debug instance (#" + (index + 1) + ")");
+      console.log({
+        element: element,
+        trigger: this.getTrigger(element),
+        triggerStart: this.getStart(element),
+        triggerEnd: this.getEnd(element),
+        auto: this.hasAttributes(element, ['data-onscroll-auto']),
+        offsetBefore: offset,
+        offsetAfter: this.getDistanceOrSpeed(element),
+        delay: this.getScrub(element),
+        screen: this.getScreen(element),
+        speed: hasSpeed ? parseFloat(speedMultiplier * element.clientHeight + speedViewportPercentage / 100 * window.innerHeight) + " (" + parseFloat(speedMultiplier) + "x element height + " + parseFloat(speedViewportPercentage) + "% of the viewport height)" : null,
+        direction: this.hasAttributes(element, ['data-onscroll-direction']) ? attrs.onscrollDirection : 'y',
+        preset: hasPreset,
+        reverse: hasReverse,
+        sticky: hasSticky,
+        animateFrom: this.getAnimateFrom(element),
+        animateTo: this.getAnimateTo(element),
+        customEvent: this.hasAttributes(element, ['data-onscroll-call']) ? attrs.onscrollCall : null
+      });
+      var warnings = [{
+        condition: this.hasAttributes(element, ['data-onscroll-offset']) && hasSpeed,
+        message: '`offset` and `speed` should not be used together'
+      }, {
+        condition: hasPreset && (this.hasAttributes(element, ['data-onscroll-start']) || this.hasAttributes(element, ['data-onscroll-end'])),
+        message: '`preset` should not be used in conjunction with `start` or `end` settings'
+      }, {
+        condition: hasSticky && hasSpeed,
+        message: '`sticky` should not be used in conjunction with `speed`'
+      }, {
+        condition: hasReverse && (!this.hasAttributes(element, ['data-onscroll-auto']) || this.hasAttributes(element, ['data-onscroll-offset']) || hasSticky || hasSpeed),
+        message: '`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'
+      }, {
+        condition: hasSpeed && hasPreset,
+        message: '`preset` has no effect in conjunction with `speed` setting'
+      }, {
+        condition: this.getDirection(element) === 'x' && hasPreset,
+        message: '`preset` has no effect in conjunction with `x` direction'
+      }];
+      warnings.forEach(function (warning) {
+        return warning.condition && console.warn(warning.message);
+      });
+      console.groupEnd();
     }
 
     // Fetch a trigger
@@ -531,22 +575,23 @@
     }
 
     // Update animation for a specific target with new fromProperties and toProperties
-    ;
-    _proto.update = function update(target, fromProperties, toProperties) {
-      var animationData = this.triggers.get(target);
-      if (animationData) {
-        // Stop the existing animation
-        animationData.gsapAnimation.kill();
-
-        // Reinitialize the animation with updated properties
-        var gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties);
-        this.triggers.set(gsapAnimation.scrollTrigger, _extends({}, animationData, {
-          fromProperties: fromProperties,
-          toProperties: toProperties,
-          gsapAnimation: gsapAnimation
-        }));
-      }
-    }
+    // 	update(target, fromProperties, toProperties) {
+    // 		const animationData = this.triggers.get(target)
+    //
+    // 		if (animationData) {
+    // 			// Stop the existing animation
+    // 			animationData.gsapAnimation.kill()
+    //
+    // 			// Reinitialize the animation with updated properties
+    // 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
+    // 			this.triggers.set(gsapAnimation.scrollTrigger, {
+    // 				...animationData,
+    // 				fromProperties,
+    // 				toProperties,
+    // 				gsapAnimation,
+    // 			})
+    // 		}
+    // 	}
 
     // Destroy the OnscrollDetection instance
     ;

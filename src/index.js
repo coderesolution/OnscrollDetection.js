@@ -411,91 +411,63 @@ export default class OnscrollDetection {
 
 	// Enable debug mode for logging
 	debugMode(element, index) {
-		if (this.hasAttributes(element, ['data-onscroll-debug'])) {
-			const { offset, distance } = this.getOffsetAndDistance(element)
-			let speedMultiplier
-			let speedViewportPercentage
-			if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-				;[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',')
-			}
-			console.group(`OnscrollDetection() debug instance (#${index + 1})`)
-			console.log({
-				element: element,
-				trigger: this.getTrigger(element),
-				triggerStart: this.getStart(element),
-				triggerEnd: this.getEnd(element),
-				auto: this.hasAttributes(element, ['data-onscroll-auto']),
-				offsetBefore: offset,
-				offsetAfter: this.getDistanceOrSpeed(element),
-				delay: this.getScrub(element),
-				screen: this.getScreen(element),
-				speed: this.hasAttributes(element, ['data-onscroll-speed'])
-					? parseFloat(
-							speedMultiplier * element.clientHeight +
-								(speedViewportPercentage / 100) * window.innerHeight
-					  ) +
-					  ' (' +
-					  parseFloat(speedMultiplier) +
-					  'x element height + ' +
-					  parseFloat(speedViewportPercentage) +
-					  '% of the viewport height)'
-					: null,
-				direction: this.hasAttributes(element, ['data-onscroll-direction'])
-					? element.dataset.onscrollDirection
-					: 'y',
-				preset: this.hasAttributes(element, ['data-onscroll-preset']) ? true : false,
-				reverse: this.hasAttributes(element, ['data-onscroll-reverse']) ? true : false,
-				sticky: this.hasAttributes(element, ['data-onscroll-sticky']) ? true : false,
-				animateFrom: this.getAnimateFrom(element),
-				animateTo: this.getAnimateTo(element),
-				customEvent: this.hasAttributes(element, ['data-onscroll-call'])
-					? element.getAttribute('data-onscroll-call')
-					: null,
-			})
-			if (
-				this.hasAttributes(element, ['data-onscroll-offset']) &&
-				this.hasAttributes(element, ['data-onscroll-speed'])
-			) {
-				console.warn('`offset` and `speed` should not be used together')
-			}
-			if (
-				this.hasAttributes(element, ['data-onscroll-preset']) &&
-				(this.hasAttributes(element, ['data-onscroll-start']) ||
-					this.hasAttributes(element, ['data-onscroll-end']))
-			) {
-				console.warn('`preset` should not be used in conjunction with `start` or `end` settings')
-			}
-			if (
-				this.hasAttributes(element, ['data-onscroll-sticky']) &&
-				this.hasAttributes(element, ['data-onscroll-speed'])
-			) {
-				console.warn('`sticky` should not be used in conjunction with `speed`')
-			}
-			if (
-				this.hasAttributes(element, ['data-onscroll-reverse']) &&
-				(!this.hasAttributes(element, ['data-onscroll-auto']) ||
-					this.hasAttributes(element, ['data-onscroll-offset']) ||
-					this.hasAttributes(element, ['data-onscroll-sticky']) ||
-					this.hasAttributes(element, ['data-onscroll-speed']))
-			) {
-				console.warn(
-					'`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'
-				)
-			}
-			if (
-				this.hasAttributes(element, ['data-onscroll-speed']) &&
-				this.hasAttributes(element, ['data-onscroll-preset'])
-			) {
-				console.warn('`preset` has no effect in conjunction with `speed` setting')
-			}
-			if (
-				this.getDirection(element) === 'x' &&
-				this.hasAttributes(element, ['data-onscroll-preset'])
-			) {
-				console.warn('`preset` has no effect in conjunction with `x` direction')
-			}
-			console.groupEnd()
+		if (!this.hasAttributes(element, ['data-onscroll-debug'])) return;
+
+		const { offset, distance } = this.getOffsetAndDistance(element);
+		let speedMultiplier;
+		let speedViewportPercentage;
+
+		if (this.hasAttributes(element, ['data-onscroll-speed'])) {
+			[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',');
 		}
+
+		const attrs = element.dataset;
+		const hasSpeed = this.hasAttributes(element, ['data-onscroll-speed']);
+		const hasPreset = this.hasAttributes(element, ['data-onscroll-preset']);
+		const hasSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
+		const hasReverse = this.hasAttributes(element, ['data-onscroll-reverse']);
+
+		console.group(`OnscrollDetection() debug instance (#${index + 1})`);
+		console.log({
+			element: element,
+			trigger: this.getTrigger(element),
+			triggerStart: this.getStart(element),
+			triggerEnd: this.getEnd(element),
+			auto: this.hasAttributes(element, ['data-onscroll-auto']),
+			offsetBefore: offset,
+			offsetAfter: this.getDistanceOrSpeed(element),
+			delay: this.getScrub(element),
+			screen: this.getScreen(element),
+			speed: hasSpeed
+				? `${parseFloat(
+					speedMultiplier * element.clientHeight +
+					(speedViewportPercentage / 100) * window.innerHeight
+				)} (${parseFloat(speedMultiplier)}x element height + ${parseFloat(speedViewportPercentage)}% of the viewport height)`
+				: null,
+			direction: this.hasAttributes(element, ['data-onscroll-direction'])
+				? attrs.onscrollDirection
+				: 'y',
+			preset: hasPreset,
+			reverse: hasReverse,
+			sticky: hasSticky,
+			animateFrom: this.getAnimateFrom(element),
+			animateTo: this.getAnimateTo(element),
+			customEvent: this.hasAttributes(element, ['data-onscroll-call'])
+				? attrs.onscrollCall
+				: null,
+		});
+
+		const warnings = [
+			{condition: this.hasAttributes(element, ['data-onscroll-offset']) && hasSpeed, message: '`offset` and `speed` should not be used together'},
+			{condition: hasPreset && (this.hasAttributes(element, ['data-onscroll-start']) || this.hasAttributes(element, ['data-onscroll-end'])), message: '`preset` should not be used in conjunction with `start` or `end` settings'},
+			{condition: hasSticky && hasSpeed, message: '`sticky` should not be used in conjunction with `speed`'},
+			{condition: hasReverse && (!this.hasAttributes(element, ['data-onscroll-auto']) || this.hasAttributes(element, ['data-onscroll-offset']) || hasSticky || hasSpeed), message: '`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'},
+			{condition: hasSpeed && hasPreset, message: '`preset` has no effect in conjunction with `speed` setting'},
+			{condition: this.getDirection(element) === 'x' && hasPreset, message: '`preset` has no effect in conjunction with `x` direction'}
+		];
+
+		warnings.forEach(warning => warning.condition && console.warn(warning.message));
+		console.groupEnd();
 	}
 
 	// Fetch a trigger
