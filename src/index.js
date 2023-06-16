@@ -464,6 +464,12 @@ export default class OnscrollDetection {
 					: null,
 			})
 			if (
+				this.hasAttributes(element, ['data-onscroll-offset']) &&
+				this.hasAttributes(element, ['data-onscroll-speed'])
+			) {
+				console.warn('`offset` and `speed` should not be used together')
+			}
+			if (
 				this.hasAttributes(element, ['data-onscroll-preset']) &&
 				(this.hasAttributes(element, ['data-onscroll-start']) ||
 					this.hasAttributes(element, ['data-onscroll-end']))
