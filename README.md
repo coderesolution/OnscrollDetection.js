@@ -129,6 +129,8 @@ Apply any of the following to a `[data-onscroll]` element to apply custom animat
 | `data-onscroll-screen`    | String  | `'(min-width: 1025px)'` | Set screen size conditions, i.e. to only animate on desktop and not mobile, or vice-versa. Expects media queries like `(min-width: 500px)` or `(min-width: 768px) and (max-width: 1000px)` etc. Set to `all` to animate on all screen sizes.                                                                                                                                                                                                                                           |
 | `data-onscroll-from`      |  JSON   |         Not set         | Customise the animate from setting. This sets `gsap.from()` properties and therefore expects JSON format, i.e. `{"backgroundColor": "#fff", "rotation": "0"}`.                                                                                                                                                                                                                                                                                                                         |
 | `data-onscroll-to`        |  JSON   |         Not set         | Customise the animate to setting. This sets `gsap.to()` properties and therefore expects JSON format, i.e. `{"backgroundColor": "red", "rotation": "5"}`.                                                                                                                                                                                                                                                                                                                              |
+| `data-onscroll-call`      | String  |         Not set         | Fire custom events when elements enter, re-enter, leave or re-leave the viewport and use data such as the element and scroll direction. Example: `data-onscroll-call="scrollEvent"`.                                                                                                                                                                                                                                                                                                   |
+| `data-onscroll-progress`  | String  |         Not set         | When set a CSS variable `--onscrollProgress` will be declared to the element. This variable represents the current progress of the element between start and end, ranging between `0` and `1`. You can also listen for a custom event that includes the percentage, element and scroll direction. Example: `data-onscroll-progress="progressEvent"`.                                                                                                                                   |
 
 ### Methods
 
@@ -247,6 +249,8 @@ onscroll.on('restart', () => {
 
 ### Custom Callbacks
 
+#### Events
+
 Fire custom events when elements enter or leave the viewport.
 
 ```html
@@ -257,6 +261,21 @@ Fire custom events when elements enter or leave the viewport.
 window.addEventListener('scrollEvent', (e) => {
 	const { target, direction, when } = e.detail
 	console.log(`target: ${target}`, `direction: ${direction}`, `when: ${when}`)
+})
+```
+
+### Progress
+
+If a value is set, i.e. `data-onscroll-progress="progressEvent"` then trigger the custom event.
+
+```html
+<div data-onscroll data-onscroll-progress="progressEvent">Track Progress</div>
+```
+
+```js
+window.addEventListener('progressEvent', (e) => {
+	const { element, progress, direction } = e.detail
+	console.log(`element: ${element}`, `progress: ${progress}`, `direction: ${direction}`)
 })
 ```
 

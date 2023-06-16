@@ -82,6 +82,11 @@ onscroll.on('stop', (target) => {
 	console.log('Stopped', target)
 })
 
+// window.addEventListener('progressEvent', (e) => {
+// 	const { element, progress, direction } = e.detail;
+// 	console.log(`element: ${element}`, `progress: ${progress}`, `direction: ${direction}`);
+// });
+
 /* Custom functions */
 window.addEventListener('scrollEventDemo', (e) => {
 	const { target, direction, when } = e.detail;

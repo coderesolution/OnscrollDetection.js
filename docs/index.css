@@ -214,9 +214,22 @@ meter {
 				font-size: 12px;
 				justify-content: center;
 				height: 140px;
+				overflow: hidden;
 				padding: 8px;
+				position: relative;
 				text-align: center;
 				width: 140px;
+			}
+
+			.box.-progress::before {
+				background: tomato;
+				content: "";
+				height: 100%;
+				left: 0;
+				position: absolute;
+				top: 0;
+				width: calc(var(--onscrollProgress) * 100%);
+				z-index: -1;
 			}
 
 		.images {

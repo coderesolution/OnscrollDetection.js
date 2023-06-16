@@ -160,6 +160,7 @@
       var stickyProperties = this.getStickyProperties(element);
       var isSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
       var customEventName = element.getAttribute('data-onscroll-call');
+      var progressEventName = element.getAttribute('data-onscroll-progress');
 
       // Helper function to dispatch the custom event
       var dispatchCustomEvent = function dispatchCustomEvent(when, direction) {
@@ -169,6 +170,19 @@
               target: element,
               direction: direction === 1 ? 'down' : 'up',
               when: when
+            }
+          }));
+        }
+      };
+
+      // Helper function to dispatch progress event
+      var dispatchProgressEvent = function dispatchProgressEvent(progress, direction) {
+        if (progressEventName) {
+          window.dispatchEvent(new CustomEvent(progressEventName, {
+            detail: {
+              element: element,
+              progress: progress,
+              direction: direction === 1 ? 'down' : 'up'
             }
           }));
         }
@@ -186,6 +200,18 @@
           pinSpacing: stickyProperties.pinSpacing,
           scrub: this.getScrub(element),
           markers: this.hasAttributes(element, ['data-onscroll-debug']),
+          onUpdate: function onUpdate(self) {
+            var progress = self.progress.toFixed(2);
+            element.style.setProperty('--onscrollProgress', progress);
+            if (progressEventName) {
+              dispatchProgressEvent(progress, self.direction);
+            }
+          },
+          onToggle: function onToggle(self) {
+            if (!self.isActive) {
+              element.style.setProperty('--onscrollProgress', 0);
+            }
+          },
           onEnter: function onEnter(_ref) {
             var direction = _ref.direction;
             element.classList.add(_this2.scrollingClass, _this2.scrolledClass);

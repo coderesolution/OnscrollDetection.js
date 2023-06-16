@@ -142,6 +142,7 @@ export default class OnscrollDetection {
 		const stickyProperties = this.getStickyProperties(element)
 		const isSticky = this.hasAttributes(element, ['data-onscroll-sticky'])
 		const customEventName = element.getAttribute('data-onscroll-call')
+		const progressEventName = element.getAttribute('data-onscroll-progress')
 
 		// Helper function to dispatch the custom event
 		const dispatchCustomEvent = (when, direction) => {
@@ -155,6 +156,21 @@ export default class OnscrollDetection {
 						},
 					})
 				)
+			}
+		}
+
+		// Helper function to dispatch progress event
+		const dispatchProgressEvent = (progress, direction) => {
+			if (progressEventName) {
+				window.dispatchEvent(
+					new CustomEvent(progressEventName, {
+						detail: {
+							element: element,
+							progress: progress,
+							direction: direction === 1 ? 'down' : 'up'
+						}
+					})
+				);
 			}
 		}
 
@@ -172,6 +188,19 @@ export default class OnscrollDetection {
 				pinSpacing: stickyProperties.pinSpacing,
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
+				onUpdate: self => {
+					let progress = self.progress.toFixed(2);
+					element.style.setProperty('--onscrollProgress', progress);
+
+					if (progressEventName) {
+						dispatchProgressEvent(progress, self.direction);
+					}
+				},
+				onToggle: self => {
+					if (!self.isActive) {
+						element.style.setProperty('--onscrollProgress', 0);
+					}
+				},
 				onEnter: ({ direction }) => {
 					element.classList.add(this.scrollingClass, this.scrolledClass)
 					if (isSticky) {
