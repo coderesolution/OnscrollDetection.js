@@ -369,14 +369,6 @@ export default class OnscrollDetection {
 			let positionElement = parseFloat(offsetValue) < 0 ? 'top+=' + offsetValue : 'top+=0'
 			let positionMarker = 'bottom'
 
-			console.log(
-				this.getDirection(element) +
-					'start preset with ' +
-					parseFloat(offsetValue) +
-					' offset and ' +
-					parseFloat(distanceValue) +
-					' distance'
-			)
 			return positionElement + ' ' + positionMarker
 		} else {
 			return element.dataset.onscrollStart ? element.dataset.onscrollStart : 'top bottom'
@@ -411,9 +403,6 @@ export default class OnscrollDetection {
 			let positionElement = 'bottom+=' + distanceValue
 			let positionMarker = 'top'
 
-			console.log(
-				'end preset with ' + parseFloat(offsetValue) + ' offset and ' + parseFloat(distanceValue) + ' distance'
-			)
 			return positionElement + ' ' + positionMarker
 		} else {
 			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : 'bottom top'
@@ -477,6 +466,12 @@ export default class OnscrollDetection {
 				console.warn('`preset` should not be used in conjunction with `start` or `end` settings')
 			}
 			if (
+				this.hasAttributes(element, ['data-onscroll-sticky']) &&
+				this.hasAttributes(element, ['data-onscroll-speed'])
+			) {
+				console.warn('`sticky` should not be used in conjunction with `speed`')
+			}
+			if (
 				this.hasAttributes(element, ['data-onscroll-reverse']) &&
 				(!this.hasAttributes(element, ['data-onscroll-auto']) ||
 					this.hasAttributes(element, ['data-onscroll-offset']) ||
@@ -486,6 +481,18 @@ export default class OnscrollDetection {
 				console.warn(
 					'`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'
 				)
+			}
+			if (
+				this.hasAttributes(element, ['data-onscroll-speed']) &&
+				this.hasAttributes(element, ['data-onscroll-preset'])
+			) {
+				console.warn('`preset` has no effect in conjunction with `speed` setting')
+			}
+			if (
+				this.getDirection(element) === 'x' &&
+				this.hasAttributes(element, ['data-onscroll-preset'])
+			) {
+				console.warn('`preset` has no effect in conjunction with `x` direction')
 			}
 			console.groupEnd()
 		}
