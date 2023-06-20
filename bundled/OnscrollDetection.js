@@ -446,7 +446,7 @@
           stickyOffset = parseFloat(distanceValue);
         }
         var stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset;
-        return '+=' + stickyDistance;
+        return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : '+=' + stickyDistance;
       } else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
         var scrollDistance = this.getDistanceOrSpeed(element);
         this.getOffsetAndDistance(element);
@@ -509,6 +509,9 @@
       }, {
         condition: hasSticky && hasSpeed,
         message: '`sticky` should not be used in conjunction with `speed`'
+      }, {
+        condition: hasSticky && this.hasAttributes(element, ['data-onscroll-offset']) && this.hasAttributes(element, ['data-onscroll-end']),
+        message: 'Your bottom `offset` will be ignored due to custom `end` on the `sticky` element'
       }, {
         condition: hasReverse && (!this.hasAttributes(element, ['data-onscroll-auto']) || this.hasAttributes(element, ['data-onscroll-offset']) || hasSticky || hasSpeed),
         message: '`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'

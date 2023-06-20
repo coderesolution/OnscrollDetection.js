@@ -417,7 +417,7 @@ export default class OnscrollDetection {
 
 			const stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset
 
-			return '+=' + stickyDistance
+			return (element.dataset.onscrollEnd ? element.dataset.onscrollEnd : '+=' + stickyDistance)
 		} else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
 			const scrollDistance = this.getDistanceOrSpeed(element)
 			const { distance } = this.getOffsetAndDistance(element)
@@ -490,6 +490,7 @@ export default class OnscrollDetection {
 			{condition: this.hasAttributes(element, ['data-onscroll-offset']) && hasSpeed, message: '`offset` and `speed` should not be used together'},
 			{condition: hasPreset && (this.hasAttributes(element, ['data-onscroll-start']) || this.hasAttributes(element, ['data-onscroll-end'])), message: '`preset` should not be used in conjunction with `start` or `end` settings'},
 			{condition: hasSticky && hasSpeed, message: '`sticky` should not be used in conjunction with `speed`'},
+			{condition: hasSticky && this.hasAttributes(element, ['data-onscroll-offset']) && this.hasAttributes(element, ['data-onscroll-end']), message: 'Your bottom `offset` will be ignored due to custom `end` on the `sticky` element'},
 			{condition: hasReverse && (!this.hasAttributes(element, ['data-onscroll-auto']) || this.hasAttributes(element, ['data-onscroll-offset']) || hasSticky || hasSpeed), message: '`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'},
 			{condition: hasSpeed && hasPreset, message: '`preset` has no effect in conjunction with `speed` setting'},
 			{condition: this.getDirection(element) === 'x' && hasPreset, message: '`preset` has no effect in conjunction with `x` direction'}
