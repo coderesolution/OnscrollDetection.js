@@ -68,7 +68,7 @@ export default class OnscrollDetection {
 		this.init()
 	}
 
-	// Helper methods
+	// Events
 	on(event, handler) {
 		if (!this.eventHandlers[event]) {
 			this.eventHandlers[event] = []
