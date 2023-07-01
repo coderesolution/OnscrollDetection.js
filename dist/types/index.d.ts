@@ -42,5 +42,6 @@ export default class OnscrollDetection {
     refresh(): void;
     restart(): void;
     stop(target?: any): void;
+    update(target: any, fromProperties: any, toProperties: any): void;
     destroy(): void;
 }

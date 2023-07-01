@@ -605,23 +605,34 @@
     }
 
     // Update animation for a specific target with new fromProperties and toProperties
-    // 	update(target, fromProperties, toProperties) {
-    // 		const animationData = this.triggers.get(target)
-    //
-    // 		if (animationData) {
-    // 			// Stop the existing animation
-    // 			animationData.gsapAnimation.kill()
-    //
-    // 			// Reinitialize the animation with updated properties
-    // 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
-    // 			this.triggers.set(gsapAnimation.scrollTrigger, {
-    // 				...animationData,
-    // 				fromProperties,
-    // 				toProperties,
-    // 				gsapAnimation,
-    // 			})
-    // 		}
-    // 	}
+    ;
+    _proto.update = function update(target, fromProperties, toProperties) {
+      var animationData = this.triggers.get(target);
+      if (animationData) {
+        // Stop the existing animation
+        animationData.gsapAnimation.kill();
+
+        // Reinitialize the animation with updated properties
+        var gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties);
+
+        // Create new ScrollTrigger for the updated animation
+        var trigger = ScrollTrigger.create({
+          animation: gsapAnimation,
+          trigger: this.getTrigger(animationData.element),
+          start: this.getStart(animationData.element),
+          end: this.getEnd(animationData.element),
+          scrub: this.getScrub(animationData.element)
+        });
+
+        // Save the updated animation data
+        this.triggers.set(target, _extends({}, animationData, {
+          fromProperties: fromProperties,
+          toProperties: toProperties,
+          gsapAnimation: gsapAnimation,
+          trigger: trigger
+        }));
+      }
+    }
 
     // Destroy the OnscrollDetection instance
     ;
