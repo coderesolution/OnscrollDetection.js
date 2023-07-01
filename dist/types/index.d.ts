@@ -3,6 +3,7 @@ export default class OnscrollDetection {
     elements: any;
     screen: any;
     triggers: Map<any, any>;
+    debug: any;
     scrollingClass: any;
     scrolledClass: any;
     stickyClass: any;

@@ -4,6 +4,7 @@ export default class OnscrollDetection {
 		this.elements = options.elements || '[data-onscroll]'
 		this.screen = options.screen || '(min-width: 1025px)'
 		this.triggers = new Map()
+		this.debug = options.debug || false
 
 		// Set class names to defaults or provided options
 		this.scrollingClass = options.scrollingClass || 'is-scrolling'
@@ -440,7 +441,7 @@ export default class OnscrollDetection {
 
 	// Enable debug mode for logging
 	debugMode(element, index) {
-		if (!this.hasAttributes(element, ['data-onscroll-debug'])) return;
+		if (!this.debug && !this.hasAttributes(element, ['data-onscroll-debug'])) return;
 
 		const { offset, distance } = this.getOffsetAndDistance(element);
 		let speedMultiplier;

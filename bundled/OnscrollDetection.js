@@ -27,6 +27,7 @@
       this.elements = options.elements || '[data-onscroll]';
       this.screen = options.screen || '(min-width: 1025px)';
       this.triggers = new Map();
+      this.debug = options.debug || false;
 
       // Set class names to defaults or provided options
       this.scrollingClass = options.scrollingClass || 'is-scrolling';
@@ -94,7 +95,7 @@
       this.init();
     }
 
-    // Helper methods
+    // Events
     ;
     _proto.on = function on(event, handler) {
       if (!this.eventHandlers[event]) {
@@ -465,7 +466,7 @@
     // Enable debug mode for logging
     ;
     _proto.debugMode = function debugMode(element, index) {
-      if (!this.hasAttributes(element, ['data-onscroll-debug'])) return;
+      if (!this.debug && !this.hasAttributes(element, ['data-onscroll-debug'])) return;
       var _this$getOffsetAndDis4 = this.getOffsetAndDistance(element),
         offset = _this$getOffsetAndDis4.offset;
       var speedMultiplier;

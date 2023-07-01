@@ -93,6 +93,7 @@ const onscroll = new OnscrollDetection({
 	scrolledClass: 'has-scrolled',
 	stickyClass: 'is-sticky',
 	stuckClass: 'has-stuck',
+	debug: false,
 })
 ```
 
@@ -105,6 +106,7 @@ const onscroll = new OnscrollDetection({
 | `scrolledClass`  | String  |    `'has-scrolled'`     | The class that is permanently assigned to element when they have been in view.                                         |
 | `stickyClass`    | String  |     `'has-sticky'`      | The class that is temporarily assigned to sticky element set by `[data-onscroll-sticky]` when they are in view.        |
 | `stuckClass`     | String  |      `'has-stuck'`      | The class that is permanently assigned to sticky element set by `[data-onscroll-sticky]` when they have been in view.  |
+| `debug`          | Boolean |          false          | Set debug mode to all instances.                                                                                       |
 
 ## Instructions
 

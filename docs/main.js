@@ -23,7 +23,7 @@ const onscroll = new OnscrollDetection({
 	scrollingClass: 'custom-scrolling',
 	scrolledClass: 'custom-scrolled',
 	stickyClass: 'custom-sticky',
-	stuckClass: 'custom-stuck',
+	stuckClass: 'custom-stuck'
 })
 
 /* Buttons */
