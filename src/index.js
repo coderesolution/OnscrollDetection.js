@@ -567,23 +567,23 @@ export default class OnscrollDetection {
 	}
 
 	// Update animation for a specific target with new fromProperties and toProperties
-// 	update(target, fromProperties, toProperties) {
-// 		const animationData = this.triggers.get(target)
-//
-// 		if (animationData) {
-// 			// Stop the existing animation
-// 			animationData.gsapAnimation.kill()
-//
-// 			// Reinitialize the animation with updated properties
-// 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
-// 			this.triggers.set(gsapAnimation.scrollTrigger, {
-// 				...animationData,
-// 				fromProperties,
-// 				toProperties,
-// 				gsapAnimation,
-// 			})
-// 		}
-// 	}
+	update(target, fromProperties, toProperties) {
+		const animationData = this.triggers.get(target)
+
+		if (animationData) {
+			// Stop the existing animation
+			animationData.gsapAnimation.kill()
+
+			// Reinitialize the animation with updated properties
+			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
+			this.triggers.set(gsapAnimation.scrollTrigger, {
+				...animationData,
+				fromProperties,
+				toProperties,
+				gsapAnimation,
+			})
+		}
+	}
 
 	// Destroy the OnscrollDetection instance
 	destroy() {

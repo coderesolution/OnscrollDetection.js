@@ -49,9 +49,9 @@ oButtons.forEach((oButton) => {
 				onscroll.restart()
 				break
 
-			// case 'update':
-			// 	onscroll.update(triggerToStop,{color: 'red'},{color: 'blue'})
-			// 	break
+			case 'update':
+				onscroll.update(triggerToStop,{color: 'red'},{color: 'blue', opacity: 1, scale: 1.15, rotate: 45})
+				break
 
 			default:
 				console.log('No method')
