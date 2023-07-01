@@ -168,10 +168,10 @@ export default class OnscrollDetection {
 						detail: {
 							element: element,
 							progress: progress,
-							direction: direction === 1 ? 'down' : 'up'
-						}
+							direction: direction === 1 ? 'down' : 'up',
+						},
 					})
-				);
+				)
 			}
 		}
 
@@ -189,17 +189,17 @@ export default class OnscrollDetection {
 				pinSpacing: stickyProperties.pinSpacing,
 				scrub: this.getScrub(element),
 				markers: this.hasAttributes(element, ['data-onscroll-debug']),
-				onUpdate: self => {
-					let progress = self.progress.toFixed(2);
-					element.style.setProperty('--onscrollProgress', progress);
+				onUpdate: (self) => {
+					let progress = self.progress.toFixed(2)
+					element.style.setProperty('--onscrollProgress', progress)
 
 					if (progressEventName) {
-						dispatchProgressEvent(progress, self.direction);
+						dispatchProgressEvent(progress, self.direction)
 					}
 				},
-				onToggle: self => {
+				onToggle: (self) => {
 					if (!self.isActive) {
-						element.style.setProperty('--onscrollProgress', 0);
+						element.style.setProperty('--onscrollProgress', 0)
 					}
 				},
 				onEnter: ({ direction }) => {
@@ -418,7 +418,7 @@ export default class OnscrollDetection {
 
 			const stickyDistance = trigger.clientHeight - element.clientHeight - stickyOffset
 
-			return (element.dataset.onscrollEnd ? element.dataset.onscrollEnd : '+=' + stickyDistance)
+			return element.dataset.onscrollEnd ? element.dataset.onscrollEnd : '+=' + stickyDistance
 		} else if (this.hasAttributes(element, ['data-onscroll-speed']) && !element.hasAttribute('data-onscroll-end')) {
 			const scrollDistance = this.getDistanceOrSpeed(element)
 			const { distance } = this.getOffsetAndDistance(element)
@@ -441,23 +441,23 @@ export default class OnscrollDetection {
 
 	// Enable debug mode for logging
 	debugMode(element, index) {
-		if (!this.debug && !this.hasAttributes(element, ['data-onscroll-debug'])) return;
+		if (!this.debug && !this.hasAttributes(element, ['data-onscroll-debug'])) return
 
-		const { offset, distance } = this.getOffsetAndDistance(element);
-		let speedMultiplier;
-		let speedViewportPercentage;
+		const { offset, distance } = this.getOffsetAndDistance(element)
+		let speedMultiplier
+		let speedViewportPercentage
 
 		if (this.hasAttributes(element, ['data-onscroll-speed'])) {
-			[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',');
+			;[speedMultiplier, speedViewportPercentage] = element.dataset.onscrollSpeed.split(',')
 		}
 
-		const attrs = element.dataset;
-		const hasSpeed = this.hasAttributes(element, ['data-onscroll-speed']);
-		const hasPreset = this.hasAttributes(element, ['data-onscroll-preset']);
-		const hasSticky = this.hasAttributes(element, ['data-onscroll-sticky']);
-		const hasReverse = this.hasAttributes(element, ['data-onscroll-reverse']);
+		const attrs = element.dataset
+		const hasSpeed = this.hasAttributes(element, ['data-onscroll-speed'])
+		const hasPreset = this.hasAttributes(element, ['data-onscroll-preset'])
+		const hasSticky = this.hasAttributes(element, ['data-onscroll-sticky'])
+		const hasReverse = this.hasAttributes(element, ['data-onscroll-reverse'])
 
-		console.group(`OnscrollDetection() debug instance (#${index + 1})`);
+		console.group(`OnscrollDetection() debug instance (#${index + 1})`)
 		console.log({
 			element: element,
 			trigger: this.getTrigger(element),
@@ -470,35 +470,59 @@ export default class OnscrollDetection {
 			screen: this.getScreen(element),
 			speed: hasSpeed
 				? `${parseFloat(
-					speedMultiplier * element.clientHeight +
-					(speedViewportPercentage / 100) * window.innerHeight
-				)} (${parseFloat(speedMultiplier)}x element height + ${parseFloat(speedViewportPercentage)}% of the viewport height)`
+						speedMultiplier * element.clientHeight + (speedViewportPercentage / 100) * window.innerHeight
+				  )} (${parseFloat(speedMultiplier)}x element height + ${parseFloat(
+						speedViewportPercentage
+				  )}% of the viewport height)`
 				: null,
-			direction: this.hasAttributes(element, ['data-onscroll-direction'])
-				? attrs.onscrollDirection
-				: 'y',
+			direction: this.hasAttributes(element, ['data-onscroll-direction']) ? attrs.onscrollDirection : 'y',
 			preset: hasPreset,
 			reverse: hasReverse,
 			sticky: hasSticky,
 			animateFrom: this.getAnimateFrom(element),
 			animateTo: this.getAnimateTo(element),
-			customEvent: this.hasAttributes(element, ['data-onscroll-call'])
-				? attrs.onscrollCall
-				: null,
-		});
+			customEvent: this.hasAttributes(element, ['data-onscroll-call']) ? attrs.onscrollCall : null,
+		})
 
 		const warnings = [
-			{condition: this.hasAttributes(element, ['data-onscroll-offset']) && hasSpeed, message: '`offset` and `speed` should not be used together'},
-			{condition: hasPreset && (this.hasAttributes(element, ['data-onscroll-start']) || this.hasAttributes(element, ['data-onscroll-end'])), message: '`preset` should not be used in conjunction with `start` or `end` settings'},
-			{condition: hasSticky && hasSpeed, message: '`sticky` should not be used in conjunction with `speed`'},
-			{condition: hasSticky && this.hasAttributes(element, ['data-onscroll-offset']) && this.hasAttributes(element, ['data-onscroll-end']), message: 'Your bottom `offset` will be ignored due to custom `end` on the `sticky` element'},
-			{condition: hasReverse && (!this.hasAttributes(element, ['data-onscroll-auto']) || this.hasAttributes(element, ['data-onscroll-offset']) || hasSticky || hasSpeed), message: '`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`'},
-			{condition: hasSpeed && hasPreset, message: '`preset` has no effect in conjunction with `speed` setting'},
-			{condition: this.getDirection(element) === 'x' && hasPreset, message: '`preset` has no effect in conjunction with `x` direction'}
-		];
+			{
+				condition: this.hasAttributes(element, ['data-onscroll-offset']) && hasSpeed,
+				message: '`offset` and `speed` should not be used together',
+			},
+			{
+				condition:
+					hasPreset &&
+					(this.hasAttributes(element, ['data-onscroll-start']) ||
+						this.hasAttributes(element, ['data-onscroll-end'])),
+				message: '`preset` should not be used in conjunction with `start` or `end` settings',
+			},
+			{ condition: hasSticky && hasSpeed, message: '`sticky` should not be used in conjunction with `speed`' },
+			{
+				condition:
+					hasSticky &&
+					this.hasAttributes(element, ['data-onscroll-offset']) &&
+					this.hasAttributes(element, ['data-onscroll-end']),
+				message: 'Your bottom `offset` will be ignored due to custom `end` on the `sticky` element',
+			},
+			{
+				condition:
+					hasReverse &&
+					(!this.hasAttributes(element, ['data-onscroll-auto']) ||
+						this.hasAttributes(element, ['data-onscroll-offset']) ||
+						hasSticky ||
+						hasSpeed),
+				message:
+					'`reverse` is not compatible with `offset`, `speed` or `sticky` and should only be used in conjunction with `auto`',
+			},
+			{ condition: hasSpeed && hasPreset, message: '`preset` has no effect in conjunction with `speed` setting' },
+			{
+				condition: this.getDirection(element) === 'x' && hasPreset,
+				message: '`preset` has no effect in conjunction with `x` direction',
+			},
+		]
 
-		warnings.forEach(warning => warning.condition && console.warn(warning.message));
-		console.groupEnd();
+		warnings.forEach((warning) => warning.condition && console.warn(warning.message))
+		console.groupEnd()
 	}
 
 	// Fetch a trigger
@@ -576,11 +600,23 @@ export default class OnscrollDetection {
 
 			// Reinitialize the animation with updated properties
 			const gsapAnimation = gsap.fromTo(animationData.element, fromProperties, toProperties)
-			this.triggers.set(gsapAnimation.scrollTrigger, {
+
+			// Create new ScrollTrigger for the updated animation
+			const trigger = ScrollTrigger.create({
+				animation: gsapAnimation,
+				trigger: this.getTrigger(animationData.element),
+				start: this.getStart(animationData.element),
+				end: this.getEnd(animationData.element),
+				scrub: this.getScrub(animationData.element),
+			})
+
+			// Save the updated animation data
+			this.triggers.set(target, {
 				...animationData,
 				fromProperties,
 				toProperties,
 				gsapAnimation,
+				trigger,
 			})
 		}
 	}

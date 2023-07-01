@@ -249,6 +249,20 @@ onscroll.on('restart', () => {
 })
 ```
 
+#### Update
+
+Adjust the onscroll to and from properties applied to an element.
+
+```js
+const elementToStop = document.querySelector('#myElement')
+const triggerToStop = onscroll.fetch(elementToStop)
+onscroll.update(
+	triggerToStop,
+	{ color: 'red', opacity: 1, scale: 1, rotate: 0, margin: 0 },
+	{ color: 'blue', opacity: 0, scale: 1.15, rotate: 180, margin: '0 0.25em' }
+)
+```
+
 ### Custom Callbacks
 
 #### Events

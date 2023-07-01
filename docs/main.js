@@ -23,14 +23,14 @@ const onscroll = new OnscrollDetection({
 	scrollingClass: 'custom-scrolling',
 	scrolledClass: 'custom-scrolled',
 	stickyClass: 'custom-sticky',
-	stuckClass: 'custom-stuck'
+	stuckClass: 'custom-stuck',
 })
 
 /* Buttons */
 const oButtons = document.querySelectorAll('.js-button')
 
-const elementToStop = document.querySelector("#myElement");
-const triggerToStop = onscroll.fetch(elementToStop);
+const elementToStop = document.querySelector('#myElement')
+const triggerToStop = onscroll.fetch(elementToStop)
 
 oButtons.forEach((oButton) => {
 	oButton.addEventListener('click', (e) => {
@@ -50,7 +50,11 @@ oButtons.forEach((oButton) => {
 				break
 
 			case 'update':
-				onscroll.update(triggerToStop,{color: 'red'},{color: 'blue', opacity: 1, scale: 1.15, rotate: 45})
+				onscroll.update(
+					triggerToStop,
+					{ color: 'red', opacity: 1, scale: 1, rotate: 0, margin: 0 },
+					{ color: 'blue', opacity: 0, scale: 1.15, rotate: 180, margin: '0 0.25em' }
+				)
 				break
 
 			default:
@@ -89,6 +93,6 @@ onscroll.on('stop', (target) => {
 
 /* Custom functions */
 window.addEventListener('scrollEventDemo', (e) => {
-	const { target, direction, when } = e.detail;
-	console.log(`target: ${target}`, `direction: ${direction}`, `when: ${when}`);
-});
+	const { target, direction, when } = e.detail
+	console.log(`target: ${target}`, `direction: ${direction}`, `when: ${when}`)
+})
